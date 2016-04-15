@@ -67,6 +67,8 @@ public class MemoryUtil {
     public static String getCacheDir() {
         String path = null;
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            if (NovelApp.getInstance().getExternalCacheDir() == null)
+                return path;
             path = NovelApp.getInstance().getExternalCacheDir().getPath();
         }
         return path;

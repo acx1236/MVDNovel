@@ -7,6 +7,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,27 @@ import com.ancx.mvdnovel.util.MsgUtil;
 import com.ancx.mvdnovel.view.MainView;
 
 public class MainActivity extends AppCompatActivity implements MainView, View.OnClickListener {
+
+    private long firstExitTime;
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (System.currentTimeMillis() - firstExitTime < 1500) {
+                exit();
+            } else {
+                MsgUtil.ToastShort("再按一次退出小说！");
+            }
+            firstExitTime = System.currentTimeMillis();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void exit() {
+        finish();
+        System.exit(0);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_search:
-                toSearch();
+                startActivity(new Intent(getApplicationContext(), SearchActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -86,38 +108,18 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
                 exit();
                 break;
             case R.id.tv_list:
-                showList();
+                startActivity(new Intent(getApplicationContext(), ListActivity.class));
+                mDrawerLayout.closeDrawers();
                 break;
             case R.id.tv_class:
-                showClass();
+                startActivity(new Intent(getApplicationContext(), ClassActivity.class));
+                mDrawerLayout.closeDrawers();
                 break;
         }
     }
 
-    @Override
-    public void toSearch() {
-        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
-    }
-
-    @Override
-    public void showInfo() {
+    private void showInfo() {
         MsgUtil.ToastShort("感谢追书神器!");
-    }
-
-    @Override
-    public void showList() {
-        startActivity(new Intent(getApplicationContext(), ListActivity.class));
-    }
-
-    @Override
-    public void showClass() {
-        startActivity(new Intent(getApplicationContext(), ClassActivity.class));
-    }
-
-    @Override
-    public void exit() {
-        finish();
-        System.exit(0);
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.ancx.mvdnovel.util;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
-import com.ancx.mvdnovel.NovelApp;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
@@ -58,7 +57,7 @@ public class ImageLoader {
                 mImageView.setImageResource(errorResource);
             }
         });
-        NovelApp.mQueue.add(imageRequest);
+        HttpUtil.getQueue().add(imageRequest);
     }
 
 }

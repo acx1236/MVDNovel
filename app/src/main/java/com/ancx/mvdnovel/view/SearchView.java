@@ -1,24 +1,16 @@
 package com.ancx.mvdnovel.view;
 
+import java.util.List;
+
 /**
- * Created by Administrator on 2016/4/14.
+ * Created by Ancx on 2016/4/14.
  */
 public interface SearchView {
-
-    /**
-     * 返回按钮
-     */
-    void back();
 
     /**
      * 清空EditText
      */
     void clearEditText();
-
-    /**
-     * 搜索
-     */
-    void search();
 
     /**
      * 获取EditText的文本
@@ -28,22 +20,32 @@ public interface SearchView {
     String getText();
 
     /**
-     * 清空搜索历史
+     * 设置搜索历史列表
      */
-    void clearHistory();
+    void setHistory(List<String> historys);
 
     /**
-     * 显示搜索历史列表
+     * 设置关键字列表
      */
-    void showHisTory();
-
-    /**
-     * 显示关键字列表
-     */
-    void showKeyWord();
+    void setKeyWord(List<String> keyWords);
 
     /**
      * 显示关键字列表的View
      */
     void showKeyWordView();
+
+    /**
+     * 隐藏关键字列表的View
+     */
+    void hideKeyWordsView();
+
+    /**
+     * 显示 × View
+     */
+    void showChaView();
+
+    /**
+     * 隐藏 × View
+     */
+    void hideChaView();
 }
