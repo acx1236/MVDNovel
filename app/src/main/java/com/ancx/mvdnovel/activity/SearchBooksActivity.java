@@ -52,6 +52,7 @@ public class SearchBooksActivity extends AppCompatActivity implements View.OnCli
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         bookname = getIntent().getStringExtra("bookname");
+        tv_name.setText(bookname);
         presenterSearchBooks.search();
     }
 
