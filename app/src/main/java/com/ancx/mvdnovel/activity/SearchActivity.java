@@ -24,12 +24,15 @@ import java.util.List;
 public class SearchActivity extends AppCompatActivity implements SearchView, View.OnClickListener, AdapterView.OnItemClickListener {
 
     private PresenterKeyWords presenterKeyWords;
+    private String bookname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         presenterKeyWords = new PresenterKeyWords(this);
+        bookname = getIntent().getStringExtra("bookname");
+
         initView();
     }
 
@@ -67,6 +70,8 @@ public class SearchActivity extends AppCompatActivity implements SearchView, Vie
         historyListView = (ListView) findViewById(R.id.historyListView);
         historyListView.setOnItemClickListener(this);
         presenterKeyWords.showHistory();
+        et_name.setText(bookname);
+        et_name.setSelection(getText().length());
     }
 
     @Override
@@ -145,9 +150,10 @@ public class SearchActivity extends AppCompatActivity implements SearchView, Vie
         if (TextUtils.isEmpty(getText()))
             return;
         presenterKeyWords.search();
-        Intent intent = new Intent(getApplicationContext(), SearchResultActivity.class);
+        Intent intent = new Intent(getApplicationContext(), SearchBooksActivity.class);
         intent.putExtra("bookname", getText());
         startActivity(intent);
+        finish();
     }
 
     @Override
