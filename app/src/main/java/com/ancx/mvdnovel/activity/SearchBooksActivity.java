@@ -51,7 +51,7 @@ public class SearchBooksActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        bookname = getIntent().getStringExtra("bookname");
+        bookname = intent.getStringExtra("bookname");
         tv_name.setText(bookname);
         presenterSearchBooks.search();
     }
@@ -87,10 +87,13 @@ public class SearchBooksActivity extends AppCompatActivity implements View.OnCli
             mListView.setAdapter(searchBooksAdapter);
         } else
             searchBooksAdapter.notifyByData(mData);
+        mListView.setSelection(0);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        Intent intent = new Intent(getApplicationContext(), BookDetailActivity.class);
+        intent.putExtra("_id", ((Books) searchBooksAdapter.getItem(position)).get_id());
+        startActivity(intent);
     }
 }

@@ -27,6 +27,7 @@
         <activity
             android:name=".activity.SearchBooksActivity"
             android:launchMode="singleTask" />
+        <activity android:name=".activity.BookDetailActivity"></activity>
     </application>
 
 </manifest>
