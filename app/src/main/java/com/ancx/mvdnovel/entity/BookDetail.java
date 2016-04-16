@@ -1,5 +1,7 @@
 package com.ancx.mvdnovel.entity;
 
+import com.ancx.mvdnovel.util.DateTimeUtil;
+
 import java.util.List;
 
 /**
@@ -189,7 +191,7 @@ public class BookDetail {
     }
 
     public String getUpdated() {
-        return updated;
+        return DateTimeUtil.getDate(updated);
     }
 
     public void setUpdated(String updated) {

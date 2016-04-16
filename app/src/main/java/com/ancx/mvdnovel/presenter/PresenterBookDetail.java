@@ -27,13 +27,15 @@ public class PresenterBookDetail implements OnBookDetailListener {
     public void setDetail(BookDetail bookDetail) {
         bookDetailView.showCover(bookDetail.getCover());
         bookDetailView.showTitle(bookDetail.getTitle());
-        StringBuilder sb = new StringBuilder("bookDetail.getCat() - ");
+        StringBuilder sb = new StringBuilder(bookDetail.getCat() + " - ");
         if (bookDetail.isIsSerial())
             sb.append("连载");
         else
             sb.append("完本");
         bookDetailView.showCat_Serial(sb.toString());
-        bookDetailView.showAuthor(bookDetail.getAuthor());
-        bookDetailView.showUpdate(bookDetail.getUpdated());
+        bookDetailView.showAuthor(bookDetail.getAuthor() + "  著");
+        bookDetailView.showUpdate(bookDetail.getUpdated() + "  更新");
+        bookDetailView.showLastChapter(bookDetail.getLastChapter());
+        bookDetailView.showLongIntro(bookDetail.getLongIntro());
     }
 }

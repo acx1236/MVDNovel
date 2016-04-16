@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
                 exit();
                 break;
             case R.id.tv_list:
-                startActivity(new Intent(getApplicationContext(), ListActivity.class));
+                startActivity(new Intent(getApplicationContext(), RankingActivity.class));
                 mDrawerLayout.closeDrawers();
                 break;
             case R.id.tv_class:

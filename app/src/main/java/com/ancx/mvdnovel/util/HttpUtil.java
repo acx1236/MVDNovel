@@ -3,7 +3,6 @@ package com.ancx.mvdnovel.util;
 import com.ancx.mvdnovel.NovelApp;
 import com.ancx.mvdnovel.listener.HttpRequestListener;
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -20,15 +19,18 @@ public class HttpUtil {
 
     private static RequestQueue mQueue;
 
-    private static String ETag;
-
     public static RequestQueue getQueue() {
         if (mQueue == null)
             mQueue = Volley.newRequestQueue(NovelApp.getInstance());
         return mQueue;
     }
 
+    private static Map<String, String> headers = new HashMap<>();
+
     public static void addRequest(String httpUrl, final HttpRequestListener httpRequestListener) {
+        if (headers.get("X-User-Agent") == null) {
+            headers.put("X-User-Agent", "ZhuiShuShenQi");
+        }
         StringRequest request = new StringRequest(httpUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -48,17 +50,7 @@ public class HttpUtil {
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("If-None-Match", ETag);
-                return super.getHeaders();
-            }
-
-            @Override
-            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                Map<String, String> responseHeaders = response.headers;
-                ETag = responseHeaders.get("ETag");
-                MsgUtil.LogTag("ETag = " + ETag);
-                return super.parseNetworkResponse(response);
+                return headers;
             }
         };
         request.setTag(httpUrl);

@@ -46,4 +46,18 @@ public interface BookDetailView {
      * @param update
      */
     void showUpdate(String update);
+
+    /**
+     * 显示最后一章
+     *
+     * @param lastChapter
+     */
+    void showLastChapter(String lastChapter);
+
+    /**
+     * 显示简介
+     *
+     * @param longIntro
+     */
+    void showLongIntro(String longIntro);
 }

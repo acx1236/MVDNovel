@@ -22,12 +22,14 @@
             android:name=".activity.MainActivity"
             android:launchMode="singleTask" />
         <activity android:name=".activity.SearchActivity" />
-        <activity android:name=".activity.ListActivity" />
+        <activity android:name=".activity.RankingActivity" />
         <activity android:name=".activity.ClassActivity" />
         <activity
             android:name=".activity.SearchBooksActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".activity.BookDetailActivity"></activity>
+        <activity android:name=".activity.BookDetailActivity" />
+        <activity android:name=".activity.BookDirectoryActivity" />
+        <activity android:name=".activity.RankingListActivity"></activity>
     </application>
 
 </manifest>

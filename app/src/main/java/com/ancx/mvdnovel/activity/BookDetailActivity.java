@@ -1,9 +1,11 @@
 package com.ancx.mvdnovel.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ancx.mvdnovel.R;
@@ -27,7 +29,8 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
     }
 
     private ImageView iv_back, iv_cover;
-    private TextView tv_cache, tv_title, tv_author, tv_cat_serial, tv_update;
+    private TextView tv_cache, tv_title, tv_author, tv_cat_serial, tv_update, tv_lastChapterName, tv_content, tv_add, tv_now_read;
+    private LinearLayout ll_look_dir;
 
     private void initView() {
         iv_back = (ImageView) findViewById(R.id.iv_back);
@@ -39,7 +42,15 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
         tv_author = (TextView) findViewById(R.id.tv_author);
         tv_cat_serial = (TextView) findViewById(R.id.tv_cat_serial);
         tv_update = (TextView) findViewById(R.id.tv_update);
-
+        tv_lastChapterName = (TextView) findViewById(R.id.tv_lastChapterName);
+        tv_lastChapterName.setOnClickListener(this);
+        tv_content = (TextView) findViewById(R.id.tv_content);
+        tv_add = (TextView) findViewById(R.id.tv_add);
+        tv_add.setOnClickListener(this);
+        tv_now_read = (TextView) findViewById(R.id.tv_now_read);
+        tv_now_read.setOnClickListener(this);
+        ll_look_dir = (LinearLayout) findViewById(R.id.ll_look_dir);
+        ll_look_dir.setOnClickListener(this);
         presenterBookDetail.getDetail();
     }
 
@@ -50,6 +61,23 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
                 finish();
                 break;
             case R.id.tv_cache:
+                break;
+            case R.id.tv_add:
+                break;
+            case R.id.tv_now_read:
+                break;
+            case R.id.ll_look_dir:
+                Intent intent1 = new Intent(getApplicationContext(), BookDirectoryActivity.class);
+                intent1.putExtra("title", tv_title.getText().toString());
+                intent1.putExtra("_id", _id);
+                startActivity(intent1);
+                break;
+            case R.id.tv_lastChapterName:
+                Intent intent2 = new Intent(getApplicationContext(), BookDirectoryActivity.class);
+                intent2.putExtra("isEnd", true);
+                intent2.putExtra("title", tv_title.getText());
+                intent2.putExtra("_id", _id);
+                startActivity(intent2);
                 break;
         }
     }
@@ -82,5 +110,15 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void showUpdate(String update) {
         tv_update.setText(update);
+    }
+
+    @Override
+    public void showLastChapter(String lastChapter) {
+        tv_lastChapterName.setText(lastChapter);
+    }
+
+    @Override
+    public void showLongIntro(String longIntro) {
+        tv_content.setText(longIntro);
     }
 }
