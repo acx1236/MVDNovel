@@ -11,7 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ancx.mvdnovel.R;
-import com.ancx.mvdnovel.adapter.RankingListAdapter;
+import com.ancx.mvdnovel.adapter.RankingAdapter;
 import com.ancx.mvdnovel.entity.Ranking;
 import com.ancx.mvdnovel.presenter.PresenterRanking;
 import com.ancx.mvdnovel.view.RankingView;
@@ -60,8 +60,8 @@ public class RankingActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(getApplicationContext(), RankingListActivity.class);
-        intent.putExtra("ranking", (Ranking) rankingListAdapter.getItem(position));
+        Intent intent = new Intent(getApplicationContext(), RankingTabActivity.class);
+        intent.putExtra("ranking", (Ranking) rankingAdapter.getItem(position));
         startActivity(intent);
     }
 
@@ -82,13 +82,13 @@ public class RankingActivity extends AppCompatActivity implements View.OnClickLi
             tv_sex.setText("女生");
     }
 
-    private RankingListAdapter rankingListAdapter;
+    private RankingAdapter rankingAdapter;
     private int male;
 
     @Override
     public void setRanking(List<Ranking> mData, int male, int female) {
-        rankingListAdapter = new RankingListAdapter(mData, male, female);
-        mListView.setAdapter(rankingListAdapter);
+        rankingAdapter = new RankingAdapter(mData, male, female);
+        mListView.setAdapter(rankingAdapter);
         this.male = male;
     }
 }

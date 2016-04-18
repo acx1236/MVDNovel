@@ -29,7 +29,8 @@
             android:launchMode="singleTask" />
         <activity android:name=".activity.BookDetailActivity" />
         <activity android:name=".activity.BookDirectoryActivity" />
-        <activity android:name=".activity.RankingListActivity"></activity>
+        <activity android:name=".activity.RankingTabActivity" />
+        <activity android:name=".activity.ClassTabActivity"></activity>
     </application>
 
 </manifest>

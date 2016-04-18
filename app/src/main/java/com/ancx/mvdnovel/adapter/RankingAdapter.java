@@ -14,12 +14,12 @@ import java.util.List;
 /**
  * Created by Ancx on 2016/4/16.
  */
-public class RankingListAdapter extends BaseAdapter {
+public class RankingAdapter extends BaseAdapter {
 
     private List<Ranking> mData;
     private int male, female;
 
-    public RankingListAdapter(List<Ranking> mData, int male, int female) {
+    public RankingAdapter(List<Ranking> mData, int male, int female) {
         this.mData = mData;
         this.male = male;
         this.female = female;

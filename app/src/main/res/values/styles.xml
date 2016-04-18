@@ -18,14 +18,10 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingBottom">10dp</item>
-        <item name="android:paddingLeft">15dp</item>
-        <item name="android:paddingRight">15dp</item>
         <item name="android:textColor">#4D4D4D</item>
         <item name="android:textSize">16sp</item>
         <item name="android:paddingTop">10dp</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:drawablePadding">10dp</item>
-        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_marginLeft">7dp</item>
     </style>
 
     <style name="LeftMenuBottomTextStyle">
@@ -39,12 +35,15 @@
     </style>
 
     <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabIndicatorColor">?attr/colorAccent</item>
         <item name="tabIndicatorHeight">0dp</item>
         <item name="tabPaddingStart">10dp</item>
         <item name="tabPaddingEnd">10dp</item>
         <item name="tabTextAppearance">@style/MyCustomTabTextAppearance</item>
-        <item name="tabSelectedTextColor">#4BBCCC</item>
+        <item name="tabSelectedTextColor">#FFFFFF</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabGravity">center</item>
+        <item name="tabIndicatorColor">#FFFFFF</item>
+        <item name="tabTextColor">@android:color/darker_gray</item>
     </style>
 
     <style name="MyCustomTabTextAppearance" parent="TextAppearance.Design.Tab">

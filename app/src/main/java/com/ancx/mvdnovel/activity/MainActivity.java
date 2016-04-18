@@ -3,8 +3,10 @@ package com.ancx.mvdnovel.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -12,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ancx.mvdnovel.R;
@@ -25,6 +28,10 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawers();
+            return true;
+        }
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (System.currentTimeMillis() - firstExitTime < 1500) {
                 exit();
@@ -55,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
     private ActionBarDrawerToggle mDrawerToggle;
     private TextView tv_info, tv_exit;
     private ImageView iv_title;
-    private TextView tv_list, tv_class;
+    private LinearLayout ll_list, ll_class;
 
     private void initView() {
         mToolbar = (Toolbar) findViewById(R.id.mToolbar);
@@ -71,10 +78,10 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
         iv_title = (ImageView) findViewById(R.id.iv_title);
         ImageLoader.display("http://edu.cnr.cn/list/201307/W020130729357663094833.png", iv_title, R.mipmap.ic_launcher, R.mipmap.ic_launcher, 0, 0);
         // TODO LeftMenu的列表按钮
-        tv_list = (TextView) findViewById(R.id.tv_list);
-        tv_list.setOnClickListener(this);
-        tv_class = (TextView) findViewById(R.id.tv_class);
-        tv_class.setOnClickListener(this);
+        ll_list = (LinearLayout) findViewById(R.id.ll_list);
+        ll_list.setOnClickListener(this);
+        ll_class = (LinearLayout) findViewById(R.id.ll_class);
+        ll_class.setOnClickListener(this);
         // TODO LeftMenu的Bottom按钮
         tv_info = (TextView) findViewById(R.id.tv_info);
         tv_info.setOnClickListener(this);
@@ -107,19 +114,29 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
             case R.id.tv_exit:
                 exit();
                 break;
-            case R.id.tv_list:
+            case R.id.ll_list:
                 startActivity(new Intent(getApplicationContext(), RankingActivity.class));
                 mDrawerLayout.closeDrawers();
                 break;
-            case R.id.tv_class:
+            case R.id.ll_class:
                 startActivity(new Intent(getApplicationContext(), ClassActivity.class));
                 mDrawerLayout.closeDrawers();
                 break;
         }
     }
 
+    private AlertDialog infoDialog;
+
     private void showInfo() {
-        MsgUtil.ToastShort("感谢追书神器!");
+        if (infoDialog == null) {
+            infoDialog = new AlertDialog.Builder(this)
+                    .setTitle("MVD小说")
+                    .setMessage("感谢追书神器提供资源！\n\n感谢静读天下和宜搜小说提供设计!\n\n作者：Ancx\n\n联系方式(QQ)：504242389")
+                    .setPositiveButton("确定", null)
+                    .show();
+            infoDialog.setCanceledOnTouchOutside(false);
+        } else
+            infoDialog.show();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.ancx.mvdnovel.holder;
+package com.ancx.mvdnovel.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

@@ -13,17 +13,43 @@
         android:layout_marginBottom="10dp"
         android:scaleType="centerCrop" />
 
-    <TextView
-        android:id="@+id/tv_list"
-        style="@style/LeftMenuTextStyle"
-        android:drawableLeft="@mipmap/icon_list"
-        android:text="榜单" />
+    <LinearLayout
+        android:id="@+id/ll_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_background_classname"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp">
 
-    <TextView
-        android:id="@+id/tv_class"
-        style="@style/LeftMenuTextStyle"
-        android:drawableLeft="@mipmap/icon_class"
-        android:text="分类" />
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@mipmap/icon_list" />
+
+        <TextView
+            style="@style/LeftMenuTextStyle"
+            android:text="榜单" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_class"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_background_classname"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@mipmap/icon_class" />
+
+        <TextView
+            style="@style/LeftMenuTextStyle"
+            android:text="分类" />
+
+    </LinearLayout>
 
     <View
         android:layout_width="1dp"

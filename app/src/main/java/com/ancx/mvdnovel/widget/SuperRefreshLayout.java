@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.ancx.mvdnovel.R;
-import com.ancx.mvdnovel.holder.BaseViewHolder;
+import com.ancx.mvdnovel.view.BaseViewHolder;
 import com.mingle.widget.LoadingView;
 
 import java.util.ArrayList;
@@ -21,9 +21,9 @@ import java.util.List;
 /**
  * Created by Ancx on 2016/3/1.
  */
-public class NewSuperRefreshLayout extends LinearLayout implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class SuperRefreshLayout extends LinearLayout implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    public NewSuperRefreshLayout(Context context, AttributeSet attrs) {
+    public SuperRefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         inflate(context, R.layout.layout_super_refresh, this);
         initView();
@@ -35,10 +35,6 @@ public class NewSuperRefreshLayout extends LinearLayout implements View.OnClickL
     private RecyclerView mRecyclerView;
     private GridLayoutManager mGridLayoutManager;
     private View onLoadView, noDataView;
-
-    public RecyclerView getRecyclerView() {
-        return mRecyclerView;
-    }
 
     private void initView() {
         mLoadingView = (LoadingView) findViewById(R.id.mLoadingView);
