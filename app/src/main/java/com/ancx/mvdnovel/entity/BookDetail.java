@@ -60,6 +60,25 @@ public class BookDetail {
     private List<String> gender;
     private List<String> tags;
 
+    private int readCount;
+    private int readPage;
+
+    public int getReadCount() {
+        return readCount;
+    }
+
+    public void setReadCount(int readCount) {
+        this.readCount = readCount;
+    }
+
+    public int getReadPage() {
+        return readPage;
+    }
+
+    public void setReadPage(int readPage) {
+        this.readPage = readPage;
+    }
+
     public String get_id() {
         return _id;
     }

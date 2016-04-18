@@ -63,6 +63,7 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
             case R.id.tv_cache:
                 break;
             case R.id.tv_add:
+                presenterBookDetail.operateBook();
                 break;
             case R.id.tv_now_read:
                 break;
@@ -120,5 +121,10 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void showLongIntro(String longIntro) {
         tv_content.setText(longIntro);
+    }
+
+    @Override
+    public void setAddText(String text) {
+        tv_add.setText(text);
     }
 }

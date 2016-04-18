@@ -18,6 +18,8 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // 搜索历史表
         db.execSQL("create table history (name string, time string)");
+        // 我的书架表
+        db.execSQL("create table bookshelf (_id string, title string, cover string, author string, updated string, lastChapter string, readCount int, chaptersCount int, readPage int, openedTime string)");
     }
 
     @Override

@@ -5,9 +5,12 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -18,11 +21,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ancx.mvdnovel.R;
+import com.ancx.mvdnovel.adapter.ReadBookAdapter;
+import com.ancx.mvdnovel.entity.BookDetail;
+import com.ancx.mvdnovel.presenter.PresenterMain;
 import com.ancx.mvdnovel.util.ImageLoader;
 import com.ancx.mvdnovel.util.MsgUtil;
 import com.ancx.mvdnovel.view.MainView;
 
-public class MainActivity extends AppCompatActivity implements MainView, View.OnClickListener {
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements MainView, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private long firstExitTime;
 
@@ -49,10 +57,14 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
         System.exit(0);
     }
 
+    private PresenterMain presenterMain;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        presenterMain = new PresenterMain(this);
 
         initView();
     }
@@ -63,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
     private TextView tv_info, tv_exit;
     private ImageView iv_title;
     private LinearLayout ll_list, ll_class;
+    private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private void initView() {
         mToolbar = (Toolbar) findViewById(R.id.mToolbar);
@@ -74,6 +88,11 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        initLeftMenu();
+        initMain();
+    }
+
+    private void initLeftMenu() {
         // TODO LeftMenu
         iv_title = (ImageView) findViewById(R.id.iv_title);
         ImageLoader.display("http://edu.cnr.cn/list/201307/W020130729357663094833.png", iv_title, R.mipmap.ic_launcher, R.mipmap.ic_launcher, 0, 0);
@@ -87,6 +106,15 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
         tv_info.setOnClickListener(this);
         tv_exit = (TextView) findViewById(R.id.tv_exit);
         tv_exit.setOnClickListener(this);
+    }
+
+    private void initMain() {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mSwipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mRecyclerView = (RecyclerView) findViewById(R.id.mRecyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mRecyclerView.setHasFixedSize(true);
+        presenterMain.getMyBooks();
     }
 
     @Override
@@ -139,9 +167,22 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
             infoDialog.show();
     }
 
-    @Override
-    public void showNovel() {
+    private ReadBookAdapter readBookAdapter;
 
+    @Override
+    public void showBook(List<BookDetail> books) {
+        readBookAdapter = new ReadBookAdapter(books);
+        mRecyclerView.setAdapter(readBookAdapter);
     }
 
+    @Override
+    public void onRefresh() {
+        presenterMain.updateBooks();
+    }
+
+    @Override
+    public void updateComplete() {
+        readBookAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 }

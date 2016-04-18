@@ -60,4 +60,11 @@ public interface BookDetailView {
      * @param longIntro
      */
     void showLongIntro(String longIntro);
+
+    /**
+     * 设置添加还是移除
+     *
+     * @param text
+     */
+    void setAddText(String text);
 }

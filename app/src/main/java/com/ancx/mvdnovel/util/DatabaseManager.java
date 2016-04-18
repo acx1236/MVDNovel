@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.ancx.mvdnovel.NovelApp;
+import com.ancx.mvdnovel.entity.BookDetail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,4 +80,115 @@ public class DatabaseManager {
         db.close();
     }
 
+    /**
+     * 添加图书
+     *
+     * @param book
+     * @return 1添加成功；0添加失败
+     */
+    public int addBook(BookDetail book) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            //  _id				    图书id
+            // title				图书名称
+            // cover				图片地址
+            // author			    图书作者
+            //  updated			    更新时间
+            // lastChapter		    最后一章
+            //  readCount			已读章节数
+            // chaptersCount		总章节数
+            // readPage             阅读页数
+            // openedTime		    最后一次打开的时间(排序标准)
+            db.execSQL("insert into bookshelf values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    new Object[]{book.get_id(), book.getTitle(), book.getCover(), book.getAuthor(), book.getUpdated(),
+                            book.getLastChapter(), 0, book.getChaptersCount(), 0, System.currentTimeMillis()});
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            return 0;
+        } finally {
+            db.endTransaction();
+        }
+        db.close();
+        NovelApp.bookIds.add(book.get_id());
+        return 1;
+    }
+
+    /**
+     * 根据图书id删除记录
+     *
+     * @param _id
+     * @return 1删除成功；0删除失败
+     */
+    public int deleteBook(String _id) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            db.execSQL("delete from bookshelf where _id = ?", new Object[]{_id});
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            MsgUtil.LogException(e);
+            return 0;
+        } finally {
+            db.endTransaction();
+        }
+        db.close();
+        NovelApp.bookIds.remove(_id);
+        return 1;
+    }
+
+    /**
+     * 更新图书
+     *
+     * @param book
+     * @return 1更新成功；0更新失败
+     */
+    public int updateBook(BookDetail book) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            db.execSQL("update bookshelf set updated=?, lastChapter=?, readCount=?, chaptersCount=?, readPage=?, openedTime=? where _id=?",
+                    new Object[]{book.getUpdated(), book.getLastChapter(), book.getReadCount(), book.getChaptersCount(), book.getReadPage(), System.currentTimeMillis(), book.get_id()});
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            return 0;
+        } finally {
+            db.endTransaction();
+        }
+        db.close();
+        return 1;
+    }
+
+
+    /**
+     * 获取所有添加图书
+     *
+     * @return
+     */
+    public List<BookDetail> getBooks() {
+        NovelApp.bookIds.clear();
+        SQLiteDatabase dbRead = dbHelper.getReadableDatabase();
+        Cursor cursor;
+        BookDetail book;
+        List<BookDetail> list = new ArrayList<>();
+        cursor = dbRead.rawQuery("select * from bookshelf order by openedTime desc", null);
+        while (cursor.moveToNext()) {
+            book = new BookDetail();
+            String _id = cursor.getString(cursor.getColumnIndex("_id"));
+            book.set_id(_id);
+            NovelApp.bookIds.add(_id);
+            book.setTitle(cursor.getString(cursor.getColumnIndex("title")));
+            book.setCover("/agent/" + cursor.getString(cursor.getColumnIndex("cover")));
+            book.setAuthor(cursor.getString(cursor.getColumnIndex("author")));
+            book.setUpdated(cursor.getString(cursor.getColumnIndex("updated")));
+            book.setLastChapter(cursor.getString(cursor.getColumnIndex("lastChapter")));
+            book.setReadCount(cursor.getInt(cursor.getColumnIndex("readCount")));
+            book.setChaptersCount(cursor.getInt(cursor.getColumnIndex("chaptersCount")));
+            book.setReadPage(cursor.getInt(cursor.getColumnIndex("readPage")));
+            list.add(book);
+        }
+        cursor.close();
+        dbRead.close();
+        return list;
+    }
 }
