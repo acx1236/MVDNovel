@@ -100,8 +100,8 @@ public class DatabaseManager {
             // chaptersCount		总章节数
             // readPage             阅读页数
             // openedTime		    最后一次打开的时间(排序标准)
-            db.execSQL("insert into bookshelf values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    new Object[]{book.get_id(), book.getTitle(), book.getCover(), book.getAuthor(), book.getUpdated(),
+            db.execSQL("insert into bookshelf values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    new Object[]{book.get_id(), "", book.getTitle(), book.getCover(), book.getAuthor(), book.getUpdated(),
                             book.getLastChapter(), 0, book.getChaptersCount(), 0, System.currentTimeMillis()});
             db.setTransactionSuccessful();
         } catch (Exception e) {
@@ -147,8 +147,8 @@ public class DatabaseManager {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
-            db.execSQL("update bookshelf set updated=?, lastChapter=?, readCount=?, chaptersCount=?, readPage=?, openedTime=? where _id=?",
-                    new Object[]{book.getUpdated(), book.getLastChapter(), book.getReadCount(), book.getChaptersCount(), book.getReadPage(), System.currentTimeMillis(), book.get_id()});
+            db.execSQL("update bookshelf set sourceId=?, updated=?, lastChapter=?, readCount=?, chaptersCount=?, readPage=?, openedTime=? where _id=?",
+                    new Object[]{book.getSourceId(), book.getUpdated(), book.getLastChapter(), book.getReadCount(), book.getChaptersCount(), book.getReadPage(), System.currentTimeMillis(), book.get_id()});
             db.setTransactionSuccessful();
         } catch (Exception e) {
             return 0;
@@ -177,6 +177,7 @@ public class DatabaseManager {
             String _id = cursor.getString(cursor.getColumnIndex("_id"));
             book.set_id(_id);
             NovelApp.bookIds.add(_id);
+            book.setSourceId(cursor.getString(cursor.getColumnIndex("sourceId")));
             book.setTitle(cursor.getString(cursor.getColumnIndex("title")));
             book.setCover("/agent/" + cursor.getString(cursor.getColumnIndex("cover")));
             book.setAuthor(cursor.getString(cursor.getColumnIndex("author")));
@@ -189,6 +190,7 @@ public class DatabaseManager {
         }
         cursor.close();
         dbRead.close();
+        NovelApp.readBookChanged = false;
         return list;
     }
 }

@@ -33,4 +33,9 @@ public class PresenterRanking implements OnRankingListener {
         mData.addAll(females);
         rankingView.setRanking(mData, males.size(), females.size());
     }
+
+    @Override
+    public void onFailed() {
+        rankingView.errorNet();
+    }
 }

@@ -14,4 +14,6 @@ public interface OnRankingListener {
      * @param females 女性
      */
     void setRanking(List<Ranking> males, List<Ranking> females);
+
+    void onFailed();
 }

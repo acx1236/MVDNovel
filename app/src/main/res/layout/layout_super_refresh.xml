@@ -35,7 +35,7 @@
             android:layout_above="@+id/textView"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="15dp"
-            android:src="@mipmap/no_data" />
+            android:src="@mipmap/icon_no_data" />
 
     </RelativeLayout>
 
@@ -64,7 +64,7 @@
             android:layout_above="@+id/tv_nointernet"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="15dp"
-            android:src="@mipmap/no_internet" />
+            android:src="@mipmap/icon_no_internet" />
 
     </RelativeLayout>
 

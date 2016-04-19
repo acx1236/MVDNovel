@@ -62,6 +62,24 @@ public class BookDetail {
 
     private int readCount;
     private int readPage;
+    private String sourceId;
+    private boolean isUpdate;
+
+    public boolean isUpdate() {
+        return isUpdate;
+    }
+
+    public void setUpdate(boolean update) {
+        isUpdate = update;
+    }
+
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
 
     public int getReadCount() {
         return readCount;

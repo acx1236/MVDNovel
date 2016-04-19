@@ -15,13 +15,14 @@ import com.ancx.mvdnovel.adapter.RankingAdapter;
 import com.ancx.mvdnovel.entity.Ranking;
 import com.ancx.mvdnovel.presenter.PresenterRanking;
 import com.ancx.mvdnovel.view.RankingView;
+import com.ancx.mvdnovel.widget.LoadView;
 
 import java.util.List;
 
 /**
  * 榜单页面
  */
-public class RankingActivity extends AppCompatActivity implements View.OnClickListener, RankingView, AdapterView.OnItemClickListener, AbsListView.OnScrollListener {
+public class RankingActivity extends AppCompatActivity implements View.OnClickListener, RankingView, AdapterView.OnItemClickListener, AbsListView.OnScrollListener, LoadView.OnReloadDataListener {
 
     private PresenterRanking presenterRanking;
 
@@ -38,14 +39,22 @@ public class RankingActivity extends AppCompatActivity implements View.OnClickLi
     private ImageView iv_back;
     private ListView mListView;
     private TextView tv_sex;
+    private LoadView mLoadingView;
 
     private void initView() {
         iv_back = (ImageView) findViewById(R.id.iv_back);
         iv_back.setOnClickListener(this);
+        mLoadingView = (LoadView) findViewById(R.id.mLoadingView);
+        mLoadingView.setOnReloadDataListener(this);
         tv_sex = (TextView) findViewById(R.id.tv_sex);
         mListView = (ListView) findViewById(R.id.mListView);
         mListView.setOnItemClickListener(this);
         mListView.setOnScrollListener(this);
+        presenterRanking.getRanking();
+    }
+
+    @Override
+    public void onReload() {
         presenterRanking.getRanking();
     }
 
@@ -90,5 +99,12 @@ public class RankingActivity extends AppCompatActivity implements View.OnClickLi
         rankingAdapter = new RankingAdapter(mData, male, female);
         mListView.setAdapter(rankingAdapter);
         this.male = male;
+        tv_sex.setVisibility(View.VISIBLE);
+        mLoadingView.loadComplete();
+    }
+
+    @Override
+    public void errorNet() {
+        mLoadingView.errorNet();
     }
 }

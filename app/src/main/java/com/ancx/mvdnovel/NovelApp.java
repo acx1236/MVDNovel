@@ -24,4 +24,6 @@ public class NovelApp extends Application {
     }
 
     public static List<String> bookIds = new ArrayList<>();
+
+    public static boolean readBookChanged = false;
 }

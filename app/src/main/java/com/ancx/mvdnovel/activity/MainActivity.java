@@ -20,9 +20,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ancx.mvdnovel.NovelApp;
 import com.ancx.mvdnovel.R;
 import com.ancx.mvdnovel.adapter.ReadBookAdapter;
 import com.ancx.mvdnovel.entity.BookDetail;
+import com.ancx.mvdnovel.listener.OnMoreOperationListener;
 import com.ancx.mvdnovel.presenter.PresenterMain;
 import com.ancx.mvdnovel.util.ImageLoader;
 import com.ancx.mvdnovel.util.MsgUtil;
@@ -30,7 +32,7 @@ import com.ancx.mvdnovel.view.MainView;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MainView, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements MainView, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, OnMoreOperationListener {
 
     private long firstExitTime;
 
@@ -58,6 +60,13 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
     }
 
     private PresenterMain presenterMain;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (NovelApp.readBookChanged)
+            presenterMain.getMyBooks();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,8 +180,14 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
 
     @Override
     public void showBook(List<BookDetail> books) {
-        readBookAdapter = new ReadBookAdapter(books);
-        mRecyclerView.setAdapter(readBookAdapter);
+        if (readBookAdapter == null) {
+            readBookAdapter = new ReadBookAdapter(books);
+            readBookAdapter.setOnMoreOperationListener(this);
+            mRecyclerView.setAdapter(readBookAdapter);
+            presenterMain.updateBooks();
+        } else {
+            readBookAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -181,8 +196,24 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
     }
 
     @Override
-    public void updateComplete() {
-        readBookAdapter.notifyDataSetChanged();
+    public void updateComplete(boolean update) {
+        if (update)
+            readBookAdapter.notifyDataSetChanged();
         mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onRemoveBook(String _id, int position) {
+        presenterMain.removeBook(_id, position);
+    }
+
+    @Override
+    public void onCacheBook(String _id, int position) {
+        MsgUtil.LogTag("_id = " + _id);
+    }
+
+    @Override
+    public void onBookDirectory(String sourceId, int position) {
+        MsgUtil.LogTag("sourceId = " + sourceId);
     }
 }

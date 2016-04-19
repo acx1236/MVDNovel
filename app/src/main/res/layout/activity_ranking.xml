@@ -30,11 +30,17 @@
 
     </LinearLayout>
 
+    <com.ancx.mvdnovel.widget.LoadView
+        android:id="@+id/mLoadingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ll_toolbar" />
+
     <ListView
         android:id="@+id/mListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/ll_toolbar"
+        android:layout_below="@+id/mLoadingView"
         android:scrollbars="none" />
 
     <TextView
@@ -47,6 +53,7 @@
         android:paddingLeft="10dp"
         android:text="男生"
         android:textColor="#FFFFFF"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:visibility="gone" />
 
 </RelativeLayout>

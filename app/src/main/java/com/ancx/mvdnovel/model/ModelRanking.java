@@ -23,7 +23,8 @@ public class ModelRanking {
 
             @Override
             public void onError(VolleyError error) {
-
+                if (onRankingListener != null)
+                    onRankingListener.onFailed();
             }
         });
     }

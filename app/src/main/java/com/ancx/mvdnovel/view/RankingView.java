@@ -17,4 +17,6 @@ public interface RankingView {
      * @param female 女性数据个数
      */
     void setRanking(List<Ranking> mData, int male, int female);
+
+    void errorNet();
 }

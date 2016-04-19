@@ -15,5 +15,5 @@ public interface MainView {
      */
     void showBook(List<BookDetail> books);
 
-    void updateComplete();
+    void updateComplete(boolean update);
 }
