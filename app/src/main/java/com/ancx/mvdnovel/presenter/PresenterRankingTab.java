@@ -21,9 +21,12 @@ public class PresenterRankingTab {
     private List<BaseFragment> fragments = new ArrayList<>();
 
     public void getFragments() {
-        fragments.add(new RankingTabFragment(rankingTabView.getRanking().get_id()));
-        fragments.add(new RankingTabFragment(rankingTabView.getRanking().getMonthRank()));
-        fragments.add(new RankingTabFragment(rankingTabView.getRanking().getTotalRank()));
+        if (rankingTabView.getRanking().get_id() != null)
+            fragments.add(new RankingTabFragment(rankingTabView.getRanking().get_id()));
+        if (rankingTabView.getRanking().getMonthRank() != null)
+            fragments.add(new RankingTabFragment(rankingTabView.getRanking().getMonthRank()));
+        if (rankingTabView.getRanking().getTotalRank() != null)
+            fragments.add(new RankingTabFragment(rankingTabView.getRanking().getTotalRank()));
         rankingTabView.setViewPager(fragments);
     }
 }
