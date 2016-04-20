@@ -70,6 +70,7 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
                 Intent cacheService = new Intent(getApplicationContext(), CacheBookService.class);
                 cacheService.putExtra("book", book);
                 startService(cacheService);
+                tv_add.setText("移除此书");
                 break;
             case R.id.tv_add:
                 presenterBookDetail.operateBook();
