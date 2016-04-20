@@ -2,12 +2,13 @@ package com.ancx.mvdnovel.entity;
 
 import com.ancx.mvdnovel.util.DateTimeUtil;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Ancx on 2016/4/15.
  */
-public class BookDetail {
+public class BookDetail implements Serializable {
 
     private String _id;
     /**

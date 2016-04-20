@@ -1,9 +1,12 @@
 package com.ancx.mvdnovel.presenter;
 
+import android.text.TextUtils;
+
 import com.ancx.mvdnovel.entity.Chapter;
 import com.ancx.mvdnovel.entity.Source;
 import com.ancx.mvdnovel.listener.OnBookDirectoryListener;
 import com.ancx.mvdnovel.model.ModelBookDirectory;
+import com.ancx.mvdnovel.util.DatabaseManager;
 import com.ancx.mvdnovel.view.BookDirectoryView;
 
 import java.util.List;
@@ -20,16 +23,22 @@ public class PresenterBookDirectory implements OnBookDirectoryListener {
     }
 
     private ModelBookDirectory modelBookDirectory = new ModelBookDirectory();
+    private DatabaseManager databaseManager = new DatabaseManager();
 
     public void getDirectory() {
         modelBookDirectory.setOnBookDirectoryListener(this);
-        // 获取小说源
-        modelBookDirectory.getSource(bookDirectoryView.getId());
+        String sourceId = databaseManager.getSourceId(bookDirectoryView.getId());
+        if (TextUtils.isEmpty(sourceId))
+            // 获取小说源
+            modelBookDirectory.getSource(bookDirectoryView.getId());
+        else
+            modelBookDirectory.getDirectory(sourceId);
     }
 
     @Override
     public void setSource(List<Source> sources) {
         modelBookDirectory.getDirectory(sources.get(0).get_id());
+        databaseManager.updateSourceId(bookDirectoryView.getId(), sources.get(0).get_id());
     }
 
     @Override

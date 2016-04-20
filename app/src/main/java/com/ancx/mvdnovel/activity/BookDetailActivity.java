@@ -9,7 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ancx.mvdnovel.R;
+import com.ancx.mvdnovel.entity.BookDetail;
 import com.ancx.mvdnovel.presenter.PresenterBookDetail;
+import com.ancx.mvdnovel.service.CacheBookService;
 import com.ancx.mvdnovel.util.ImageLoader;
 import com.ancx.mvdnovel.view.BookDetailView;
 import com.ancx.mvdnovel.widget.LoadView;
@@ -65,6 +67,9 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
                 finish();
                 break;
             case R.id.tv_cache:
+                Intent cacheService = new Intent(getApplicationContext(), CacheBookService.class);
+                cacheService.putExtra("book", book);
+                startService(cacheService);
                 break;
             case R.id.tv_add:
                 presenterBookDetail.operateBook();
@@ -136,6 +141,13 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void errorNet() {
         mLoadView.errorNet();
+    }
+
+    private BookDetail book;
+
+    @Override
+    public void setBook(BookDetail book) {
+        this.book = book;
     }
 
     @Override

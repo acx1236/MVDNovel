@@ -89,13 +89,13 @@ public class MemoryUtil {
         return path;
     }
 
-    public static String getSaveNovelPath(String novelGid, String sequence) {
+    public static String getSaveNovelPath(String boodId, String title) {
         String path = null;
         if (getCacheDir() != null) {
-            if (sequence == null) {
-                path = getCacheDir() + "/novel/" + novelGid;
+            if (title == null) {
+                path = getCacheDir() + "/novel/" + boodId;
             } else {
-                path = getCacheDir() + "/novel/" + novelGid + "/" + sequence + ".text";
+                path = getCacheDir() + "/novel/" + boodId + "/" + title + ".text";
             }
         }
         return path;

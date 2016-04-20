@@ -26,6 +26,7 @@ import com.ancx.mvdnovel.adapter.ReadBookAdapter;
 import com.ancx.mvdnovel.entity.BookDetail;
 import com.ancx.mvdnovel.listener.OnMoreOperationListener;
 import com.ancx.mvdnovel.presenter.PresenterMain;
+import com.ancx.mvdnovel.service.CacheBookService;
 import com.ancx.mvdnovel.util.ImageLoader;
 import com.ancx.mvdnovel.util.MsgUtil;
 import com.ancx.mvdnovel.view.MainView;
@@ -208,12 +209,17 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
     }
 
     @Override
-    public void onCacheBook(String _id, int position) {
-        MsgUtil.LogTag("_id = " + _id);
+    public void onCacheBook(BookDetail book) {
+        Intent cacheService = new Intent(getApplicationContext(), CacheBookService.class);
+        cacheService.putExtra("book", book);
+        startService(cacheService);
     }
 
     @Override
-    public void onBookDirectory(String sourceId, int position) {
-        MsgUtil.LogTag("sourceId = " + sourceId);
+    public void onBookDirectory(String _id, String title, int position) {
+        Intent intent = new Intent(getApplicationContext(), BookDirectoryActivity.class);
+        intent.putExtra("_id", _id);
+        intent.putExtra("title", title);
+        startActivity(intent);
     }
 }

@@ -93,7 +93,7 @@ public class ReadBookAdapter extends RecyclerView.Adapter {
                         @Override
                         public void onClick(View v) {
                             if (onMoreOperationListener != null)
-                                onMoreOperationListener.onBookDirectory(books.get(position).getSourceId(), position);
+                                onMoreOperationListener.onBookDirectory(books.get(position).get_id(), books.get(position).getTitle(), position);
                             viewHolder.moreWindow.dismiss();
                         }
                     });
@@ -102,7 +102,7 @@ public class ReadBookAdapter extends RecyclerView.Adapter {
                         @Override
                         public void onClick(View v) {
                             if (onMoreOperationListener != null)
-                                onMoreOperationListener.onCacheBook(books.get(position).get_id(), position);
+                                onMoreOperationListener.onCacheBook(books.get(position));
                             viewHolder.moreWindow.dismiss();
                         }
                     });

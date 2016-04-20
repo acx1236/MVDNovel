@@ -31,6 +31,7 @@ public class PresenterBookDetail implements OnBookDetailListener {
     @Override
     public void setDetail(BookDetail bookDetail) {
         this.bookDetail = bookDetail;
+        bookDetailView.setBook(bookDetail);
         bookDetailView.showCover(bookDetail.getCover());
         bookDetailView.showTitle(bookDetail.getTitle());
         StringBuilder sb = new StringBuilder(bookDetail.getCat() + " - ");
@@ -63,7 +64,6 @@ public class PresenterBookDetail implements OnBookDetailListener {
             if (deleteBook == 1) {
                 MsgUtil.ToastShort("小说已经从书架移除!");
                 bookDetailView.setAddText("开始追书");
-                NovelApp.readBookChanged = true;
             } else {
                 MsgUtil.ToastShort("移除失败!");
             }
@@ -73,7 +73,6 @@ public class PresenterBookDetail implements OnBookDetailListener {
             if (addBook == 1) {
                 MsgUtil.ToastShort("小说已经添加到书架!");
                 bookDetailView.setAddText("移除此书");
-                NovelApp.readBookChanged = true;
             } else {
                 MsgUtil.ToastShort("添加失败!");
             }

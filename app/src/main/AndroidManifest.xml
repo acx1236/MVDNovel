@@ -11,6 +11,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <service android:name=".service.CacheBookService" />
+
         <activity android:name=".activity.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +33,7 @@
         <activity android:name=".activity.BookDetailActivity" />
         <activity android:name=".activity.BookDirectoryActivity" />
         <activity android:name=".activity.RankingTabActivity" />
-        <activity android:name=".activity.ClassTabActivity"></activity>
+        <activity android:name=".activity.ClassTabActivity" />
     </application>
 
 </manifest>

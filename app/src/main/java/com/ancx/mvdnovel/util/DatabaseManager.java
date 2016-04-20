@@ -111,6 +111,7 @@ public class DatabaseManager {
         }
         db.close();
         NovelApp.bookIds.add(book.get_id());
+        NovelApp.readBookChanged = true;
         return 1;
     }
 
@@ -134,6 +135,7 @@ public class DatabaseManager {
         }
         db.close();
         NovelApp.bookIds.remove(_id);
+        NovelApp.readBookChanged = true;
         return 1;
     }
 
@@ -192,5 +194,34 @@ public class DatabaseManager {
         dbRead.close();
         NovelApp.readBookChanged = false;
         return list;
+    }
+
+    public String getSourceId(String _id) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select sourceId from bookshelf where _id = ?", new String[]{_id});
+        cursor.moveToNext();
+        String sourceId = null;
+        try {
+            sourceId = cursor.getString(cursor.getColumnIndex("sourceId"));
+        } catch (Exception e) {
+            MsgUtil.LogException(e);
+            MsgUtil.LogTag("DatabaseManager -> getSourceId -> 异常");
+        }
+        return sourceId;
+    }
+
+    public int updateSourceId(String _id, String sourceId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            db.execSQL("update bookshelf set sourceId=? where _id=?", new Object[]{sourceId, _id});
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            return 0;
+        } finally {
+            db.endTransaction();
+        }
+        db.close();
+        return 1;
     }
 }
