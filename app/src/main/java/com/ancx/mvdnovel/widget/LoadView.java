@@ -1,12 +1,13 @@
 package com.ancx.mvdnovel.widget;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.ancx.mvdnovel.R;
-import com.mingle.widget.LoadingView;
 
 /**
  * Created by Ancx on 2016/4/19.
@@ -19,11 +20,16 @@ public class LoadView extends LinearLayout implements View.OnClickListener {
         initView();
     }
 
-    private LoadingView mLoadingView;
+    private ImageView iv_load;
     private LinearLayout ll_error_net, ll_no_data;
+    private AnimationDrawable mAnimationDrawable;
 
     private void initView() {
-        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
+        iv_load = (ImageView) findViewById(R.id.iv_load);
+        iv_load.setBackgroundResource(R.drawable.loading);
+        mAnimationDrawable = (AnimationDrawable) iv_load.getBackground();
+        mAnimationDrawable.setOneShot(false);
+        startAnim();
         ll_error_net = (LinearLayout) findViewById(R.id.ll_error_net);
         ll_error_net.setOnClickListener(this);
         ll_no_data = (LinearLayout) findViewById(R.id.ll_no_data);
@@ -50,23 +56,35 @@ public class LoadView extends LinearLayout implements View.OnClickListener {
 
     public void errorNet() {
         ll_error_net.setVisibility(VISIBLE);
-        mLoadingView.setVisibility(GONE);
+        iv_load.setVisibility(GONE);
         ll_no_data.setVisibility(GONE);
     }
 
     public void noData() {
         ll_no_data.setVisibility(VISIBLE);
-        mLoadingView.setVisibility(GONE);
+        iv_load.setVisibility(GONE);
         ll_error_net.setVisibility(GONE);
     }
 
     public void loading() {
-        mLoadingView.setVisibility(VISIBLE);
+        iv_load.setVisibility(VISIBLE);
         ll_no_data.setVisibility(GONE);
         ll_error_net.setVisibility(GONE);
     }
 
     public void loadComplete() {
         setVisibility(GONE);
+        stopAnim();
     }
+
+    private void startAnim() {
+        if (!mAnimationDrawable.isRunning())
+            mAnimationDrawable.start();
+    }
+
+    private void stopAnim() {
+        if (mAnimationDrawable.isRunning())
+            mAnimationDrawable.stop();
+    }
+
 }

@@ -10,4 +10,6 @@ import java.util.List;
 public interface OnClassBookListListener {
 
     void onClassBookList(List<ClassBook> books);
+
+    void onFailed();
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@mipmap/loading_pic1"
+        android:duration="250" />
+    <item
+        android:drawable="@mipmap/loading_pic2"
+        android:duration="250" />
+    <item
+        android:drawable="@mipmap/loading_pic3"
+        android:duration="250" />
+    <item
+        android:drawable="@mipmap/loading_pic4"
+        android:duration="250" />
+    <item
+        android:drawable="@mipmap/loading_pic5"
+        android:duration="250" />
+
+</animation-list>

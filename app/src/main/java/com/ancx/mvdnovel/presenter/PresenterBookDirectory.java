@@ -36,4 +36,9 @@ public class PresenterBookDirectory implements OnBookDirectoryListener {
     public void setDirectory(List<Chapter> chapters) {
         bookDirectoryView.setDirectory(chapters);
     }
+
+    @Override
+    public void onFailed() {
+        bookDirectoryView.errorNet();
+    }
 }

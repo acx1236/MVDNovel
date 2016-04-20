@@ -25,7 +25,8 @@ public class ModelBookDetail {
 
                     @Override
                     public void onError(VolleyError error) {
-
+                        if (onBookDetailListener != null)
+                            onBookDetailListener.onFailed();
                     }
                 });
     }

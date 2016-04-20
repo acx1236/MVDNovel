@@ -29,4 +29,9 @@ public class PresenterSearchBooks implements OnSearchBooksListener {
     public void setBooks(List<Books> mData) {
         searchBooksView.setResult(mData);
     }
+
+    @Override
+    public void onFailed() {
+        searchBooksView.errorNet();
+    }
 }

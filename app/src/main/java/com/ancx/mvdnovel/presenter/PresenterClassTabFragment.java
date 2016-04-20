@@ -41,4 +41,9 @@ public class PresenterClassTabFragment implements OnClassBookListListener {
         else
             classTabFragmentView.setBookList(classTabFragmentView.getData().size() + 65);
     }
+
+    @Override
+    public void onFailed() {
+        classTabFragmentView.errorNet();
+    }
 }

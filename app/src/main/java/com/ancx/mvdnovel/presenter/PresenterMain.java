@@ -1,5 +1,6 @@
 package com.ancx.mvdnovel.presenter;
 
+import com.ancx.mvdnovel.NovelApp;
 import com.ancx.mvdnovel.entity.BookDetail;
 import com.ancx.mvdnovel.entity.UpdateBook;
 import com.ancx.mvdnovel.listener.OnUpdateBookListener;
@@ -35,6 +36,10 @@ public class PresenterMain implements OnUpdateBookListener {
     private ModelMain modelMain = new ModelMain();
 
     public void updateBooks() {
+        if (NovelApp.bookIds.size() == 0) {
+            mainView.updateComplete(false);
+            return;
+        }
         modelMain.setOnUpdateBookListener(this);
         modelMain.updateBooks();
     }

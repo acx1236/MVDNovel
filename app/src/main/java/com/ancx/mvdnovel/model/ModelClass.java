@@ -24,7 +24,8 @@ public class ModelClass {
 
                     @Override
                     public void onError(VolleyError error) {
-
+                        if (onClassListener != null)
+                            onClassListener.onFailed();
                     }
                 });
     }

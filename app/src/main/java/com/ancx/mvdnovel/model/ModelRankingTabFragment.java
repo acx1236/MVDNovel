@@ -24,7 +24,8 @@ public class ModelRankingTabFragment {
 
                     @Override
                     public void onError(VolleyError error) {
-
+                        if (onRankingBookListListener != null)
+                            onRankingBookListListener.onFailed();
                     }
                 });
     }

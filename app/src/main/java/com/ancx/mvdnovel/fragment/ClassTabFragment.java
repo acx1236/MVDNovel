@@ -106,6 +106,11 @@ public class ClassTabFragment extends BaseFragment implements SuperRefreshLayout
     }
 
     @Override
+    public void errorNet() {
+        mSuperRefreshLayout.setNoInternet();
+    }
+
+    @Override
     public void setBookList(int total) {
         mAdapter.notifyUpdate(total);
     }

@@ -12,10 +12,11 @@ import com.ancx.mvdnovel.adapter.BookDirectoryAdapter;
 import com.ancx.mvdnovel.entity.Chapter;
 import com.ancx.mvdnovel.presenter.PresenterBookDirectory;
 import com.ancx.mvdnovel.view.BookDirectoryView;
+import com.ancx.mvdnovel.widget.LoadView;
 
 import java.util.List;
 
-public class BookDirectoryActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, BookDirectoryView {
+public class BookDirectoryActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, BookDirectoryView, LoadView.OnReloadDataListener {
 
     private boolean isEnd;
     private String title, _id;
@@ -34,11 +35,14 @@ public class BookDirectoryActivity extends AppCompatActivity implements AdapterV
     }
 
     private TextView tv_name;
+    private LoadView mLoadView;
     private ListView mListView;
 
     private void initView() {
         tv_name = (TextView) findViewById(R.id.tv_name);
         tv_name.setText(title);
+        mLoadView = (LoadView) findViewById(R.id.mLoadView);
+        mLoadView.setOnReloadDataListener(this);
         mListView = (ListView) findViewById(R.id.mListView);
         mListView.setOnItemClickListener(this);
         presenterBookDirectory.getDirectory();
@@ -64,5 +68,16 @@ public class BookDirectoryActivity extends AppCompatActivity implements AdapterV
         bookDirectoryAdapter = new BookDirectoryAdapter(chapters, selection, _id);
         mListView.setAdapter(bookDirectoryAdapter);
         mListView.setSelection(selection);
+        mLoadView.loadComplete();
+    }
+
+    @Override
+    public void errorNet() {
+        mLoadView.errorNet();
+    }
+
+    @Override
+    public void onReload() {
+        presenterBookDirectory.getDirectory();
     }
 }

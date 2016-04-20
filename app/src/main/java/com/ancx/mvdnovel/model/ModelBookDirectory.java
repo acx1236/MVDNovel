@@ -29,7 +29,8 @@ public class ModelBookDirectory {
 
                     @Override
                     public void onError(VolleyError error) {
-
+                        if (onBookDirectoryListener != null)
+                            onBookDirectoryListener.onFailed();
                     }
                 });
     }
@@ -62,7 +63,8 @@ public class ModelBookDirectory {
 
                     @Override
                     public void onError(VolleyError error) {
-
+                        if (onBookDirectoryListener != null)
+                            onBookDirectoryListener.onFailed();
                     }
                 });
     }

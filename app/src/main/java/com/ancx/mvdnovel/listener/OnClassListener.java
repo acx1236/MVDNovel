@@ -14,4 +14,6 @@ public interface OnClassListener {
      * @param female 女性
      */
     void onClassName(List<ClassName> male, List<ClassName> female);
+
+    void onFailed();
 }

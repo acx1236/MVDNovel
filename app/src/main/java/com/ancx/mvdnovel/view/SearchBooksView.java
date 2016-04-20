@@ -18,4 +18,6 @@ public interface SearchBooksView {
      * 获取搜索的小说名称
      */
     String getBookName();
+
+    void errorNet();
 }

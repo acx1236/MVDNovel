@@ -10,4 +10,6 @@ import java.util.List;
 public interface OnSearchBooksListener {
 
     void setBooks(List<Books> mData);
+
+    void onFailed();
 }

@@ -9,11 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.ancx.mvdnovel.R;
 import com.ancx.mvdnovel.view.BaseViewHolder;
-import com.mingle.widget.LoadingView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,7 @@ import java.util.List;
 /**
  * Created by Ancx on 2016/3/1.
  */
-public class SuperRefreshLayout extends LinearLayout implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class SuperRefreshLayout extends LinearLayout implements SwipeRefreshLayout.OnRefreshListener, LoadView.OnReloadDataListener {
 
     public SuperRefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -29,19 +27,15 @@ public class SuperRefreshLayout extends LinearLayout implements View.OnClickList
         initView();
     }
 
-    private LoadingView mLoadingView;
-    private RelativeLayout layout_no_data, layout_no_internet;
+    private LoadView mLoadView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private GridLayoutManager mGridLayoutManager;
     private View onLoadView, noDataView;
 
     private void initView() {
-        mLoadingView = (LoadingView) findViewById(R.id.mLoadingView);
-        layout_no_data = (RelativeLayout) findViewById(R.id.layout_no_data);
-        layout_no_data.setOnClickListener(this);
-        layout_no_internet = (RelativeLayout) findViewById(R.id.layout_no_internet);
-        layout_no_internet.setOnClickListener(this);
+        mLoadView = (LoadView) findViewById(R.id.mLoadView);
+        mLoadView.setOnReloadDataListener(this);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.mSwipeRefreshLayout);
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_purple, android.R.color.holo_blue_bright, android.R.color.holo_orange_light, android.R.color.holo_red_light);
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -74,29 +68,7 @@ public class SuperRefreshLayout extends LinearLayout implements View.OnClickList
     }
 
     public void setNoInternet() {
-        mLoadingView.setVisibility(View.GONE);
-        layout_no_data.setVisibility(View.GONE);
-        layout_no_internet.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.layout_no_data:
-                layout_no_data.setVisibility(View.GONE);
-                mLoadingView.setVisibility(View.VISIBLE);
-                if (onRefreshListener != null) {
-                    onRefreshListener.onRefresh();
-                }
-                break;
-            case R.id.layout_no_internet:
-                layout_no_internet.setVisibility(View.GONE);
-                mLoadingView.setVisibility(View.VISIBLE);
-                if (onRefreshListener != null) {
-                    onRefreshListener.onRefresh();
-                }
-                break;
-        }
+        mLoadView.errorNet();
     }
 
     private boolean isRefreshing;
@@ -104,6 +76,13 @@ public class SuperRefreshLayout extends LinearLayout implements View.OnClickList
     @Override
     public void onRefresh() {
         isRefreshing = true;
+        if (onRefreshListener != null) {
+            onRefreshListener.onRefresh();
+        }
+    }
+
+    @Override
+    public void onReload() {
         if (onRefreshListener != null) {
             onRefreshListener.onRefresh();
         }
@@ -249,7 +228,6 @@ public class SuperRefreshLayout extends LinearLayout implements View.OnClickList
         }
 
         public void notifyUpdate(int total) {
-            mLoadingView.setVisibility(View.GONE);
             if (isLoading) {
                 isLoading = false;
                 mSwipeRefreshLayout.setEnabled(true);
@@ -258,16 +236,15 @@ public class SuperRefreshLayout extends LinearLayout implements View.OnClickList
                 isRefreshing = false;
                 mSwipeRefreshLayout.setRefreshing(false);
             }
-            if (layout_no_data.getVisibility() == View.VISIBLE) {
-                layout_no_data.setVisibility(View.GONE);
-            }
-            if ((mData.size() == 0 || total == 0) && headerViews.size() == 0) {
-                layout_no_data.setVisibility(View.VISIBLE);
-            }
             if (mData.size() < total) {
                 isLoadFinish = false;
             } else {
                 isLoadFinish = true;
+            }
+            if ((mData.size() == 0 || total == 0) && headerViews.size() == 0) {
+                mLoadView.noData();
+            } else {
+                mLoadView.loadComplete();
             }
             notifyDataSetChanged();
         }

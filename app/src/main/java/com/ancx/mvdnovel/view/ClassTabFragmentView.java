@@ -22,4 +22,6 @@ public interface ClassTabFragmentView {
     void setBookList(int total);
 
     void setAddCount(int addCount);
+
+    void errorNet();
 }

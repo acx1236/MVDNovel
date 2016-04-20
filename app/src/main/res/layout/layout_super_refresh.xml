@@ -4,69 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- 加载数据前的动画-->
-    <com.mingle.widget.LoadingView
-        android:id="@+id/mLoadingView"
+    <com.ancx.mvdnovel.widget.LoadView
+        android:id="@+id/mLoadView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <!-- 数据为空-->
-    <RelativeLayout
-        android:id="@+id/layout_no_data"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFFFFF"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="数据为空"
-            android:textColor="#AB6D56"
-            android:textSize="18sp" />
-
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_above="@+id/textView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="15dp"
-            android:src="@mipmap/icon_no_data" />
-
-    </RelativeLayout>
-
-    <!-- 数据加载失败-->
-    <RelativeLayout
-        android:id="@+id/layout_no_internet"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFFFFF"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/tv_nointernet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="页面加载失败"
-            android:textColor="#AB6D56"
-            android:textSize="18sp" />
-
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_above="@+id/tv_nointernet"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="15dp"
-            android:src="@mipmap/icon_no_internet" />
-
-    </RelativeLayout>
 
     <!-- 数据加载的主体部分-->
     <!-- 刷新-->

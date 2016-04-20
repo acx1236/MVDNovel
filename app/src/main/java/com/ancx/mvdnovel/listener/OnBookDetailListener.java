@@ -8,4 +8,6 @@ import com.ancx.mvdnovel.entity.BookDetail;
 public interface OnBookDetailListener {
 
     void setDetail(BookDetail bookDetail);
+
+    void onFailed();
 }

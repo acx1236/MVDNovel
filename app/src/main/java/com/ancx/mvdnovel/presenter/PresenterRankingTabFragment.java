@@ -29,4 +29,9 @@ public class PresenterRankingTabFragment implements OnRankingBookListListener {
     public void onRankingBookList(List<RankingBook> books) {
         rankingTabFragmentView.setContent(books);
     }
+
+    @Override
+    public void onFailed() {
+        rankingTabFragmentView.errorNet();
+    }
 }

@@ -30,11 +30,17 @@
 
     </LinearLayout>
 
+    <com.ancx.mvdnovel.widget.LoadView
+        android:id="@+id/mLoadView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ll_toolbar" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/mRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/ll_toolbar"
+        android:layout_below="@+id/mLoadView"
         android:scrollbars="none" />
 
 </RelativeLayout>

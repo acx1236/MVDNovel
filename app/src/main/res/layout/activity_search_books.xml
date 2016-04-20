@@ -48,6 +48,11 @@
 
     </LinearLayout>
 
+    <com.ancx.mvdnovel.widget.LoadView
+        android:id="@+id/mLoadView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <ListView
         android:id="@+id/mListView"
         android:layout_width="match_parent"

@@ -5,6 +5,11 @@
     android:background="#F5F5F5"
     android:orientation="vertical">
 
+    <com.ancx.mvdnovel.widget.LoadView
+        android:id="@+id/mLoadView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"

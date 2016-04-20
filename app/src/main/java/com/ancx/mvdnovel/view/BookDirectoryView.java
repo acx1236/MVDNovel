@@ -15,4 +15,6 @@ public interface BookDirectoryView {
     String getId();
 
     void setDirectory(List<Chapter> chapters);
+
+    void errorNet();
 }

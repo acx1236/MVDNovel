@@ -10,4 +10,6 @@ import java.util.List;
 public interface OnRankingBookListListener {
 
     void onRankingBookList(List<RankingBook> books);
+
+    void onFailed();
 }

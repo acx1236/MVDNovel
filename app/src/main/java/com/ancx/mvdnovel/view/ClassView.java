@@ -16,4 +16,6 @@ public interface ClassView {
      * @param female
      */
     void setClass(List<ClassName> male, List<ClassName> female);
+
+    void errorNet();
 }

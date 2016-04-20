@@ -36,6 +36,8 @@ public class ModelSearchBooks {
 
                         @Override
                         public void onError(VolleyError error) {
+                            if (onSearchBooksListener != null)
+                                onSearchBooksListener.onFailed();
                         }
                     });
         } catch (UnsupportedEncodingException e) {

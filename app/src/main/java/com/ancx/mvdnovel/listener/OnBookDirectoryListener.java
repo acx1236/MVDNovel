@@ -14,4 +14,6 @@ public interface OnBookDirectoryListener {
 
     void setDirectory(List<Chapter> chapters);
 
+    void onFailed();
+
 }

@@ -22,4 +22,6 @@ public interface RankingTabFragmentView {
      * @param books
      */
     void setContent(List<RankingBook> books);
+
+    void errorNet();
 }

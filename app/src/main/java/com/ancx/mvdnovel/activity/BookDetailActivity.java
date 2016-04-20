@@ -12,8 +12,9 @@ import com.ancx.mvdnovel.R;
 import com.ancx.mvdnovel.presenter.PresenterBookDetail;
 import com.ancx.mvdnovel.util.ImageLoader;
 import com.ancx.mvdnovel.view.BookDetailView;
+import com.ancx.mvdnovel.widget.LoadView;
 
-public class BookDetailActivity extends AppCompatActivity implements View.OnClickListener, BookDetailView {
+public class BookDetailActivity extends AppCompatActivity implements View.OnClickListener, BookDetailView, LoadView.OnReloadDataListener {
 
     private String _id;
     private PresenterBookDetail presenterBookDetail;
@@ -31,12 +32,15 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
     private ImageView iv_back, iv_cover;
     private TextView tv_cache, tv_title, tv_author, tv_cat_serial, tv_update, tv_lastChapterName, tv_content, tv_add, tv_now_read;
     private LinearLayout ll_look_dir;
+    private LoadView mLoadView;
 
     private void initView() {
         iv_back = (ImageView) findViewById(R.id.iv_back);
         iv_back.setOnClickListener(this);
         tv_cache = (TextView) findViewById(R.id.tv_cache);
         tv_cache.setOnClickListener(this);
+        mLoadView = (LoadView) findViewById(R.id.mLoadView);
+        mLoadView.setOnReloadDataListener(this);
         iv_cover = (ImageView) findViewById(R.id.iv_cover);
         tv_title = (TextView) findViewById(R.id.tv_title);
         tv_author = (TextView) findViewById(R.id.tv_author);
@@ -126,5 +130,16 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void setAddText(String text) {
         tv_add.setText(text);
+        mLoadView.loadComplete();
+    }
+
+    @Override
+    public void errorNet() {
+        mLoadView.errorNet();
+    }
+
+    @Override
+    public void onReload() {
+        presenterBookDetail.getDetail();
     }
 }

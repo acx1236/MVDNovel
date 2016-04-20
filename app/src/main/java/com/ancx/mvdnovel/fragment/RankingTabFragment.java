@@ -14,13 +14,14 @@ import com.ancx.mvdnovel.adapter.RankingBookAdapter;
 import com.ancx.mvdnovel.entity.RankingBook;
 import com.ancx.mvdnovel.presenter.PresenterRankingTabFragment;
 import com.ancx.mvdnovel.view.RankingTabFragmentView;
+import com.ancx.mvdnovel.widget.LoadView;
 
 import java.util.List;
 
 /**
  * Created by Ancx on 2016/4/18.
  */
-public class RankingTabFragment extends BaseFragment implements RankingTabFragmentView, AdapterView.OnItemClickListener {
+public class RankingTabFragment extends BaseFragment implements RankingTabFragmentView, AdapterView.OnItemClickListener, LoadView.OnReloadDataListener {
 
     private String rankId;
 
@@ -36,11 +37,14 @@ public class RankingTabFragment extends BaseFragment implements RankingTabFragme
     }
 
     private ListView mListView;
+    private LoadView mLoadView;
 
     @Override
     public void initView() {
         mListView = (ListView) getView().findViewById(R.id.mListView);
         mListView.setOnItemClickListener(this);
+        mLoadView = (LoadView) getView().findViewById(R.id.mLoadView);
+        mLoadView.setOnReloadDataListener(this);
     }
 
     @Override
@@ -60,6 +64,12 @@ public class RankingTabFragment extends BaseFragment implements RankingTabFragme
     public void setContent(List<RankingBook> books) {
         rankingBookAdapter = new RankingBookAdapter(books);
         mListView.setAdapter(rankingBookAdapter);
+        mLoadView.loadComplete();
+    }
+
+    @Override
+    public void errorNet() {
+        mLoadView.errorNet();
     }
 
     @Override
@@ -67,5 +77,10 @@ public class RankingTabFragment extends BaseFragment implements RankingTabFragme
         Intent intent = new Intent(getContext(), BookDetailActivity.class);
         intent.putExtra("_id", ((RankingBook) rankingBookAdapter.getItem(position)).get_id());
         startActivity(intent);
+    }
+
+    @Override
+    public void onReload() {
+        presenterRankingTabFragment.getContent();
     }
 }

@@ -14,13 +14,14 @@ import com.ancx.mvdnovel.entity.ClassName;
 import com.ancx.mvdnovel.listener.OnItemClickListener;
 import com.ancx.mvdnovel.presenter.PresenterClass;
 import com.ancx.mvdnovel.view.ClassView;
+import com.ancx.mvdnovel.widget.LoadView;
 
 import java.util.List;
 
 /**
  * 分类页面
  */
-public class ClassActivity extends AppCompatActivity implements View.OnClickListener, ClassView, OnItemClickListener {
+public class ClassActivity extends AppCompatActivity implements View.OnClickListener, ClassView, OnItemClickListener, LoadView.OnReloadDataListener {
 
     private PresenterClass presenterClass;
 
@@ -37,10 +38,13 @@ public class ClassActivity extends AppCompatActivity implements View.OnClickList
     private ImageView iv_back;
     private RecyclerView mRecyclerView;
     private GridLayoutManager mGridLayoutManager;
+    private LoadView mLoadView;
 
     private void initView() {
         iv_back = (ImageView) findViewById(R.id.iv_back);
         iv_back.setOnClickListener(this);
+        mLoadView = (LoadView) findViewById(R.id.mLoadView);
+        mLoadView.setOnReloadDataListener(this);
         mRecyclerView = (RecyclerView) findViewById(R.id.mRecyclerView);
         mGridLayoutManager = new GridLayoutManager(getApplicationContext(), 3);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
@@ -61,6 +65,12 @@ public class ClassActivity extends AppCompatActivity implements View.OnClickList
         classAdapter = new ClassAdapter(male, female);
         classAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(classAdapter);
+        mLoadView.loadComplete();
+    }
+
+    @Override
+    public void errorNet() {
+        mLoadView.errorNet();
     }
 
     @Override
@@ -69,5 +79,10 @@ public class ClassActivity extends AppCompatActivity implements View.OnClickList
         intent.putExtra("gender", classAdapter.getClass(position).getGender());
         intent.putExtra("major", classAdapter.getClass(position).getName());
         startActivity(intent);
+    }
+
+    @Override
+    public void onReload() {
+        presenterClass.getClassList();
     }
 }

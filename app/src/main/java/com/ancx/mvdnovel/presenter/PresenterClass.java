@@ -29,4 +29,9 @@ public class PresenterClass implements OnClassListener {
     public void onClassName(List<ClassName> male, List<ClassName> female) {
         classView.setClass(male, female);
     }
+
+    @Override
+    public void onFailed() {
+        classView.errorNet();
+    }
 }

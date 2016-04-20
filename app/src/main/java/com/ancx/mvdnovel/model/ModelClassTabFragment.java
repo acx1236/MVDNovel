@@ -39,7 +39,8 @@ public class ModelClassTabFragment {
 
             @Override
             public void onError(VolleyError error) {
-
+                if (onClassBookListListener != null)
+                    onClassBookListListener.onFailed();
             }
         });
     }

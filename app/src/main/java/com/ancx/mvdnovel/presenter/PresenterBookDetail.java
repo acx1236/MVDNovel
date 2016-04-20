@@ -49,6 +49,11 @@ public class PresenterBookDetail implements OnBookDetailListener {
             bookDetailView.setAddText("开始追书");
     }
 
+    @Override
+    public void onFailed() {
+        bookDetailView.errorNet();
+    }
+
     private DatabaseManager databaseManager = new DatabaseManager();
 
     public void operateBook() {

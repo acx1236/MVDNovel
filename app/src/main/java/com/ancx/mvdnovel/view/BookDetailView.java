@@ -67,4 +67,6 @@ public interface BookDetailView {
      * @param text
      */
     void setAddText(String text);
+
+    void errorNet();
 }

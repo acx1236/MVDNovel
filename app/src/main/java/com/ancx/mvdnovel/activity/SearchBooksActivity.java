@@ -14,10 +14,11 @@ import com.ancx.mvdnovel.adapter.SearchBooksAdapter;
 import com.ancx.mvdnovel.entity.Books;
 import com.ancx.mvdnovel.presenter.PresenterSearchBooks;
 import com.ancx.mvdnovel.view.SearchBooksView;
+import com.ancx.mvdnovel.widget.LoadView;
 
 import java.util.List;
 
-public class SearchBooksActivity extends AppCompatActivity implements View.OnClickListener, SearchBooksView, AdapterView.OnItemClickListener {
+public class SearchBooksActivity extends AppCompatActivity implements View.OnClickListener, SearchBooksView, AdapterView.OnItemClickListener, LoadView.OnReloadDataListener {
 
     private String bookname;
     private PresenterSearchBooks presenterSearchBooks;
@@ -33,6 +34,7 @@ public class SearchBooksActivity extends AppCompatActivity implements View.OnCli
 
     private ImageView iv_back;
     private TextView tv_name, tv_bookshelf;
+    private LoadView mLoadView;
     private ListView mListView;
 
     private void initView() {
@@ -43,6 +45,8 @@ public class SearchBooksActivity extends AppCompatActivity implements View.OnCli
         tv_name.setOnClickListener(this);
         tv_bookshelf = (TextView) findViewById(R.id.tv_bookshelf);
         tv_bookshelf.setOnClickListener(this);
+        mLoadView = (LoadView) findViewById(R.id.mLoadView);
+        mLoadView.setOnReloadDataListener(this);
         mListView = (ListView) findViewById(R.id.mListView);
         mListView.setOnItemClickListener(this);
         presenterSearchBooks.search();
@@ -78,6 +82,11 @@ public class SearchBooksActivity extends AppCompatActivity implements View.OnCli
         return bookname;
     }
 
+    @Override
+    public void errorNet() {
+        mLoadView.errorNet();
+    }
+
     private SearchBooksAdapter searchBooksAdapter;
 
     @Override
@@ -88,6 +97,7 @@ public class SearchBooksActivity extends AppCompatActivity implements View.OnCli
         } else
             searchBooksAdapter.notifyByData(mData);
         mListView.setSelection(0);
+        mLoadView.loadComplete();
     }
 
     @Override
@@ -95,5 +105,10 @@ public class SearchBooksActivity extends AppCompatActivity implements View.OnCli
         Intent intent = new Intent(getApplicationContext(), BookDetailActivity.class);
         intent.putExtra("_id", ((Books) searchBooksAdapter.getItem(position)).get_id());
         startActivity(intent);
+    }
+
+    @Override
+    public void onReload() {
+        presenterSearchBooks.search();
     }
 }
