@@ -35,7 +35,7 @@
         <activity android:name=".activity.BookDirectoryActivity" />
         <activity android:name=".activity.RankingTabActivity" />
         <activity android:name=".activity.ClassTabActivity" />
-        <activity android:name=".activity.ReadBookActivity"></activity>
+        <activity android:name=".activity.ReadBookActivity" />
     </application>
 
 </manifest>

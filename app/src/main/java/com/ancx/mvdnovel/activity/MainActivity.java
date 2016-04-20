@@ -24,6 +24,7 @@ import com.ancx.mvdnovel.NovelApp;
 import com.ancx.mvdnovel.R;
 import com.ancx.mvdnovel.adapter.ReadBookAdapter;
 import com.ancx.mvdnovel.entity.BookDetail;
+import com.ancx.mvdnovel.listener.OnItemClickListener;
 import com.ancx.mvdnovel.listener.OnMoreOperationListener;
 import com.ancx.mvdnovel.presenter.PresenterMain;
 import com.ancx.mvdnovel.service.CacheBookService;
@@ -33,7 +34,7 @@ import com.ancx.mvdnovel.view.MainView;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MainView, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, OnMoreOperationListener {
+public class MainActivity extends AppCompatActivity implements MainView, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, OnMoreOperationListener, OnItemClickListener {
 
     private long firstExitTime;
 
@@ -183,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
     public void showBook(List<BookDetail> books) {
         if (readBookAdapter == null) {
             readBookAdapter = new ReadBookAdapter(books);
+            readBookAdapter.setOnItemClickListener(this);
             readBookAdapter.setOnMoreOperationListener(this);
             mRecyclerView.setAdapter(readBookAdapter);
             presenterMain.updateBooks();
@@ -220,6 +222,12 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
         Intent intent = new Intent(getApplicationContext(), BookDirectoryActivity.class);
         intent.putExtra("_id", _id);
         intent.putExtra("title", title);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onItemClick(View v, int position) {
+        Intent intent = new Intent(getApplicationContext(), ReadBookActivity.class);
         startActivity(intent);
     }
 }

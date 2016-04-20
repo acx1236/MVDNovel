@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.ancx.mvdnovel.NovelApp;
 import com.ancx.mvdnovel.R;
 import com.ancx.mvdnovel.entity.BookDetail;
+import com.ancx.mvdnovel.listener.OnItemClickListener;
 import com.ancx.mvdnovel.listener.OnMoreOperationListener;
 import com.ancx.mvdnovel.util.DisplayUtil;
 import com.ancx.mvdnovel.util.ImageLoader;
@@ -36,10 +37,11 @@ public class ReadBookAdapter extends RecyclerView.Adapter {
         return books.size();
     }
 
-    private class ViewHolder extends RecyclerView.ViewHolder {
+    private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
         }
 
@@ -48,6 +50,13 @@ public class ReadBookAdapter extends RecyclerView.Adapter {
         TextView tv_title, tv_author, tv_lastChapter;
         ProgressBar pb_read;
         PopupWindow moreWindow;
+
+        @Override
+        public void onClick(View v) {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(v, getPosition());
+            }
+        }
     }
 
     @Override
@@ -128,5 +137,11 @@ public class ReadBookAdapter extends RecyclerView.Adapter {
 
     public void setOnMoreOperationListener(OnMoreOperationListener onMoreOperationListener) {
         this.onMoreOperationListener = onMoreOperationListener;
+    }
+
+    private OnItemClickListener onItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 }
