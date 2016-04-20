@@ -41,17 +41,19 @@ public class CacheBookService extends Service implements OnBookDirectoryListener
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        book = (BookDetail) intent.getSerializableExtra("book");
+        if (book == null) {
+            MsgUtil.ToastShort("获取小说资源失败，重来一遍试试");
+            return super.onStartCommand(intent, flags, startId);
+        }
+        if (!NovelApp.bookIds.contains(book.get_id()))
+            databaseManager.addBook(book);
         if (isCacheing) {
             // 正在缓存
             MsgUtil.ToastShort("目前有小说正在缓存，请一会再来缓存这本小说");
             return super.onStartCommand(intent, flags, startId);
         }
         numOfCached = 0;
-        book = (BookDetail) intent.getSerializableExtra("book");
-        if (book == null) {
-            MsgUtil.ToastShort("获取小说资源失败，重来一遍试试");
-            return super.onStartCommand(intent, flags, startId);
-        }
         // 创建小说文件夹
         String saveNovelPath = MemoryUtil.getSaveNovelPath(book.get_id(), null);
         if (saveNovelPath == null) {
@@ -65,8 +67,6 @@ public class CacheBookService extends Service implements OnBookDirectoryListener
         sharedPreferences = NovelApp.getInstance().getSharedPreferences(book.get_id(), Activity.MODE_PRIVATE);
         MsgUtil.ToastShort("开始缓存");
         isCacheing = true;
-        if (!NovelApp.bookIds.contains(book.get_id()))
-            databaseManager.addBook(book);
         // 获取小说目录
         getBookDir();
         return super.onStartCommand(intent, flags, startId);

@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
         if (infoDialog == null) {
             infoDialog = new AlertDialog.Builder(this)
                     .setTitle("MVD小说")
-                    .setMessage("感谢追书神器提供资源！\n\n感谢静读天下和宜搜小说提供设计!\n\n作者：Ancx\n\n联系方式(QQ)：504242389")
+                    .setMessage("版本号：1.0\n\n希望各位看官能在评论区指出App的不足，提出宝贵的建议。MVD小说会在大家的帮助下，更加优秀。")
                     .setPositiveButton("确定", null)
                     .show();
             infoDialog.setCanceledOnTouchOutside(false);

@@ -3,6 +3,8 @@
     package="com.ancx.mvdnovel">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 
     <application
         android:name=".NovelApp"
@@ -11,7 +13,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <service android:name=".service.CacheBookService" />
 
         <activity android:name=".activity.WelcomeActivity">
@@ -34,6 +35,7 @@
         <activity android:name=".activity.BookDirectoryActivity" />
         <activity android:name=".activity.RankingTabActivity" />
         <activity android:name=".activity.ClassTabActivity" />
+        <activity android:name=".activity.ReadBookActivity"></activity>
     </application>
 
 </manifest>
