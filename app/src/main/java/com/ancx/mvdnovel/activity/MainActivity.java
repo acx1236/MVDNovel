@@ -228,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
     @Override
     public void onItemClick(View v, int position) {
         Intent intent = new Intent(getApplicationContext(), ReadBookActivity.class);
+        intent.putExtra("book", readBookAdapter.getBook(position));
         startActivity(intent);
     }
 }

@@ -6,9 +6,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.ancx.mvdnovel.util.DisplayUtil;
+import com.ancx.mvdnovel.util.MsgUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,14 +22,37 @@ public class BookTextView extends View {
 
     private boolean isNight;
 
-    private float paddingTop = DisplayUtil.dip2px(5);
-    private float paddingBottom = DisplayUtil.dip2px(5);
-    private float paddingLeft = DisplayUtil.dip2px(10);
-    private float paddingRight = DisplayUtil.dip2px(10);
-
     public void setNight(boolean night) {
         isNight = night;
     }
+
+    private String title, currentChapter, chaptersCount;
+
+    public void setHintText(String title, String currentChapter, String chaptersCount) {
+        this.title = title;
+        this.currentChapter = currentChapter;
+        this.chaptersCount = chaptersCount;
+    }
+
+    private int currentPage;
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    private String content;
+
+    public void setContent(String content) {
+        this.content = content;
+        invalidate();
+    }
+
+    private final float dp10 = DisplayUtil.dip2px(10);
+    private float paddingTop = DisplayUtil.dip2px(5);
+    private float paddingBottom = DisplayUtil.dip2px(5);
+    private float paddingLeft = dp10;
+    private float paddingRight = dp10;
+    private float lineSpacing = dp10;
 
     private Paint mPaint = new Paint();
     private Rect mRect = new Rect();
@@ -36,6 +61,11 @@ public class BookTextView extends View {
     private int hintTextColor = Color.parseColor("#91846C");
 
     private float textSize = DisplayUtil.sp2px(20);
+
+    public void setTextSize(float textSize) {
+        this.textSize = DisplayUtil.sp2px(textSize);
+    }
+
     // 正常时的颜色
     private int normalTextColor = Color.parseColor("#3B3220");
     private int normalBackGroundColor = Color.parseColor("#F0E2C0");
@@ -62,6 +92,8 @@ public class BookTextView extends View {
         mHeight = MeasureSpec.getSize(heightMeasureSpec);
     }
 
+    private boolean needMeasure = true;
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -69,6 +101,8 @@ public class BookTextView extends View {
             return;
         drawBackGround(canvas);
         drawHintText(canvas);
+        if (needMeasure)
+            measurePage();
         drawContent(canvas);
     }
 
@@ -78,16 +112,28 @@ public class BookTextView extends View {
         else
             mPaint.setColor(normalBackGroundColor);
         canvas.drawRect(0, 0, mWidth, mHeight, mPaint);
-        canvas.drawRect(0, 0, mWidth, mHeight, mPaint);
     }
 
-    private String title, currentChapter, chaptersCount;
-
-    public void setHintText(String title, String currentChapter, String chaptersCount) {
-        this.title = title;
-        this.currentChapter = currentChapter;
-        this.chaptersCount = chaptersCount;
+    private void setHintPaint() {
+        mPaint.setTextSize(hintTextSize);
+        mPaint.setColor(hintTextColor);
     }
+
+    private void getTitleHeight() {
+        if (titleHeight == 0) {
+            mPaint.getTextBounds(title, 0, title.length(), mRect);
+            titleHeight = mRect.height();
+        }
+    }
+
+    private void getBottomHeight(StringBuilder chapterText) {
+        if (bottomHeight == 0) {
+            mPaint.getTextBounds(chapterText.toString(), 0, chapterText.toString().length(), mRect);
+            bottomHeight = mRect.height();
+        }
+    }
+
+    private int titleHeight, bottomHeight;
 
     /**
      * 绘制top和bottom区域的文字（章节名称，页数，章节数等）
@@ -97,18 +143,70 @@ public class BookTextView extends View {
     private void drawHintText(Canvas canvas) {
         if (title == null)
             return;
-        mPaint.setTextSize(hintTextSize);
-        mPaint.setColor(hintTextColor);
-        mPaint.getTextBounds(title, 0, title.length(), mRect);
-        int titleHeight = mRect.height();
+        setHintPaint();
+        getTitleHeight();
         canvas.drawText(title, paddingLeft, paddingTop + titleHeight, mPaint);
         StringBuilder chapterText = new StringBuilder(currentChapter);
         chapterText.append("/");
         chapterText.append(chaptersCount);
         chapterText.append("章");
-        mPaint.getTextBounds(chapterText.toString(), 0, chapterText.toString().length(), mRect);
+        getBottomHeight(chapterText);
         canvas.drawText(chapterText.toString(), (mWidth - mRect.width()) / 2f, mHeight - paddingBottom, mPaint);
-        StringBuilder pageText = new StringBuilder("第" + currentPage);
+    }
+
+    private void setTextPaint() {
+        if (isNight)
+            mPaint.setColor(nightTextColor);
+        else
+            mPaint.setColor(normalTextColor);
+        mPaint.setTextSize(textSize);
+    }
+
+    private float contentTop, contentBottom, contentHeight, contentWidth, fontHeight, fontWidth;
+    private int lineMaxCount, pageMaxLine, totalLines, totalPage;
+
+    private void measurePage() {
+        MsgUtil.LogTag("=====  measurePage  =====");
+        contentTop = paddingTop + titleHeight + dp10;
+        contentBottom = mHeight - paddingBottom - bottomHeight - dp10;
+        contentHeight = contentBottom - contentTop;
+        contentWidth = mWidth - paddingLeft - paddingRight;
+        setTextPaint();
+        mPaint.getTextBounds("鑫", 0, 1, mRect);
+        fontHeight = mRect.height();
+        fontWidth = mPaint.measureText("鑫");
+        lineMaxCount = (int) (contentWidth / fontWidth);
+        textSplit = content.split("\n");
+        pageMaxLine = (int) ((contentHeight + lineSpacing) / (fontHeight + lineSpacing));
+        totalLines = 0;
+        for (int i = 0; i < textSplit.length; i++) {
+            totalLines += (textSplit[i].length() / lineMaxCount) + 1;
+        }
+        totalPage = totalLines / pageMaxLine + 1;
+        textList = new String[totalLines];
+        int i = 0; // 管理总行数的
+        int j = 0; // 管理段落的
+        while (i < totalLines) {
+            for (int k = 0; k < (textSplit[j].length() / lineMaxCount + 1); k++) {
+                textList[i] = textSplit[j].substring(lineMaxCount * k, (lineMaxCount * (k + 1) > textSplit[j].length() ? textSplit[j].length() : lineMaxCount * (k + 1)));
+                i++;
+            }
+            j++;
+        }
+        textSplit = null;
+        needMeasure = false;
+    }
+
+    private void drawContent(Canvas canvas) {
+        if (content == null)
+            return;
+        drawPage(canvas);
+        drawText(canvas);
+    }
+
+    private void drawPage(Canvas canvas) {
+        setHintPaint();
+        StringBuilder pageText = new StringBuilder("第" + (currentPage + 1));
         pageText.append("/");
         pageText.append("" + totalPage);
         pageText.append("页");
@@ -118,11 +216,90 @@ public class BookTextView extends View {
         canvas.drawText(time, paddingLeft, mHeight - paddingBottom, mPaint);
     }
 
-    private float contentTop, contentBottom;
+    private String[] textSplit, textList;
 
-    private void drawContent(Canvas canvas) {
-
+    private void drawText(Canvas canvas) {
+        setTextPaint();
+        for (int line = 0; line < (pageMaxLine > (totalLines - currentPage * pageMaxLine) ? (totalLines - currentPage * pageMaxLine) : pageMaxLine); line++) {
+            canvas.drawText(textList[line + currentPage * pageMaxLine], paddingLeft, contentTop + ((line + 1) * fontHeight) + (line * lineSpacing), mPaint);
+        }
     }
 
-    private int currentPage, totalPage;
+    public void addTextSize() {
+        textSize += DisplayUtil.sp2px(5);
+        invalidate();
+    }
+
+    public void minusTextSize() {
+        textSize -= DisplayUtil.sp2px(5);
+        invalidate();
+    }
+
+    public void nextPage() {
+        if (currentPage == totalPage - 1) {
+            if (onChapterChangeListener != null) {
+                onChapterChangeListener.onNextChapter();
+            }
+            return;
+        }
+        currentPage++;
+        invalidate();
+    }
+
+    public void prePage() {
+        if (currentPage == 0) {
+            if (onChapterChangeListener != null) {
+                onChapterChangeListener.onPreChapter();
+            }
+            return;
+        }
+        currentPage--;
+        invalidate();
+    }
+
+    public interface OnChapterChangeListener {
+
+        void onPreChapter();
+
+        void onNextChapter();
+
+        void onMenu();
+    }
+
+    private OnChapterChangeListener onChapterChangeListener;
+
+    public void setOnChapterChangeListener(OnChapterChangeListener onChapterChangeListener) {
+        this.onChapterChangeListener = onChapterChangeListener;
+    }
+
+    private float onTouchDownX;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                onTouchDownX = event.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                if (onTouchDownX - event.getX() > 20) {
+                    nextPage();
+                } else if (event.getX() - onTouchDownX > 20) {
+                    prePage();
+                } else {
+                    if (onTouchDownX < mWidth / 3) {
+                        prePage();
+                    } else if (onTouchDownX > (mWidth / 3 * 2)) {
+                        nextPage();
+                    } else {
+                        if (onChapterChangeListener != null) {
+                            onChapterChangeListener.onMenu();
+                        }
+                    }
+                }
+                onTouchDownX = 0;
+                break;
+        }
+        return true;
+    }
+
 }
