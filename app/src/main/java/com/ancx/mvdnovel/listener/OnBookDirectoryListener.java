@@ -12,6 +12,8 @@ public interface OnBookDirectoryListener {
 
     void setSource(List<Source> sources);
 
+    void setSourceId(String sourceId);
+
     void setDirectory(List<Chapter> chapters);
 
     void onFailed();

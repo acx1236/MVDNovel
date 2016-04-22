@@ -3,6 +3,8 @@ package com.ancx.mvdnovel;
 import android.app.Application;
 import android.content.Context;
 
+import com.ancx.mvdnovel.util.DbHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,4 +28,12 @@ public class NovelApp extends Application {
     public static List<String> bookIds = new ArrayList<>();
 
     public static boolean readBookChanged = false;
+
+    private static DbHelper dbHelper;
+
+    public static DbHelper getDbHelper() {
+        if (dbHelper == null)
+            dbHelper = new DbHelper(instance, 1);
+        return dbHelper;
+    }
 }

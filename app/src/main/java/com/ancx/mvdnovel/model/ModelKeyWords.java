@@ -53,21 +53,19 @@ public class ModelKeyWords {
         this.onKeyWordsListener = onKeyWordsListener;
     }
 
-    private DatabaseManager databaseManager = new DatabaseManager();
-
     /**
      * 获取搜索历史数据
      */
     public List<String> getHistory() {
-        return databaseManager.getHistory();
+        return DatabaseManager.getHistory();
     }
 
     public void clearHistory() {
-        databaseManager.delHistory(null);
+        DatabaseManager.delHistory(null);
     }
 
     public void addHistory(String name) {
-        databaseManager.addHistory(name);
+        DatabaseManager.addHistory(name);
     }
 
 }

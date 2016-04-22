@@ -3,17 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<com.ancx.mvdnovel.widget.LoadView-->
-    <!--android:id="@+id/mLoadView"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent" />-->
-
-    <include layout="@layout/layout_reading_menu" />
+    <com.ancx.mvdnovel.widget.LoadView
+        android:id="@+id/mLoadView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <com.ancx.mvdnovel.widget.BookTextView
         android:id="@+id/mBookTextView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/mLoadView" />
 
+    <include layout="@layout/layout_reading_menu" />
 
 </RelativeLayout>

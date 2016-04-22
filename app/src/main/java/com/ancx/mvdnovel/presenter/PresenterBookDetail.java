@@ -55,12 +55,10 @@ public class PresenterBookDetail implements OnBookDetailListener {
         bookDetailView.errorNet();
     }
 
-    private DatabaseManager databaseManager = new DatabaseManager();
-
     public void operateBook() {
         if (NovelApp.bookIds.contains(bookDetail.get_id())) {
             // 书在书架里了
-            int deleteBook = databaseManager.deleteBook(bookDetail.get_id());
+            int deleteBook = DatabaseManager.deleteBook(bookDetail.get_id());
             if (deleteBook == 1) {
                 MsgUtil.ToastShort("小说已经从书架移除!");
                 bookDetailView.setAddText("开始追书");
@@ -69,7 +67,7 @@ public class PresenterBookDetail implements OnBookDetailListener {
             }
         } else {
             // 书没在书架里
-            int addBook = databaseManager.addBook(bookDetail);
+            int addBook = DatabaseManager.addBook(bookDetail);
             if (addBook == 1) {
                 MsgUtil.ToastShort("小说已经添加到书架!");
                 bookDetailView.setAddText("移除此书");

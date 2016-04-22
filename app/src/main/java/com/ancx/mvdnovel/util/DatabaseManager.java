@@ -15,19 +15,13 @@ import java.util.List;
  */
 public class DatabaseManager {
 
-    private DbHelper dbHelper;
-
-    public DatabaseManager() {
-        dbHelper = new DbHelper(NovelApp.getInstance(), 1);
-    }
-
     /**
      * 获取搜索历史数据
      *
      * @return
      */
-    public List<String> getHistory() {
-        SQLiteDatabase dbRead = dbHelper.getReadableDatabase();
+    public static List<String> getHistory() {
+        SQLiteDatabase dbRead = NovelApp.getDbHelper().getReadableDatabase();
         Cursor cursor;
         List<String> list = new ArrayList<>();
         cursor = dbRead.rawQuery("select * from history order by time desc", null);
@@ -44,9 +38,9 @@ public class DatabaseManager {
      *
      * @param name
      */
-    public void addHistory(String name) {
+    public static void addHistory(String name) {
         delHistory(name);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = NovelApp.getDbHelper().getWritableDatabase();
         db.beginTransaction();
         try {
             db.execSQL("insert into history values(?, ?)", new Object[]{name, System.currentTimeMillis()});
@@ -63,8 +57,8 @@ public class DatabaseManager {
      *
      * @param name 删除的关键字，为null时全部删除
      */
-    public void delHistory(String name) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+    public static void delHistory(String name) {
+        SQLiteDatabase db = NovelApp.getDbHelper().getWritableDatabase();
         db.beginTransaction();
         try {
             if (name == null) {
@@ -86,8 +80,8 @@ public class DatabaseManager {
      * @param book
      * @return 1添加成功；0添加失败
      */
-    public int addBook(BookDetail book) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+    public static int addBook(BookDetail book) {
+        SQLiteDatabase db = NovelApp.getDbHelper().getWritableDatabase();
         db.beginTransaction();
         try {
             //  _id				    图书id
@@ -102,7 +96,7 @@ public class DatabaseManager {
             // openedTime		    最后一次打开的时间(排序标准)
             db.execSQL("insert into bookshelf values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     new Object[]{book.get_id(), "", book.getTitle(), book.getCover(), book.getAuthor(), book.getUpdated(),
-                            book.getLastChapter(), 0, book.getChaptersCount(), 0, System.currentTimeMillis()});
+                            book.getLastChapter(), 1, book.getChaptersCount(), 1, System.currentTimeMillis()});
             db.setTransactionSuccessful();
         } catch (Exception e) {
             return 0;
@@ -121,8 +115,8 @@ public class DatabaseManager {
      * @param _id
      * @return 1删除成功；0删除失败
      */
-    public int deleteBook(String _id) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+    public static int deleteBook(String _id) {
+        SQLiteDatabase db = NovelApp.getDbHelper().getWritableDatabase();
         db.beginTransaction();
         try {
             db.execSQL("delete from bookshelf where _id = ?", new Object[]{_id});
@@ -145,8 +139,8 @@ public class DatabaseManager {
      * @param book
      * @return 1更新成功；0更新失败
      */
-    public int updateBook(BookDetail book) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+    public static int updateBook(BookDetail book) {
+        SQLiteDatabase db = NovelApp.getDbHelper().getWritableDatabase();
         db.beginTransaction();
         try {
             db.execSQL("update bookshelf set sourceId=?, updated=?, lastChapter=?, readCount=?, chaptersCount=?, readPage=?, openedTime=? where _id=?",
@@ -167,9 +161,9 @@ public class DatabaseManager {
      *
      * @return
      */
-    public List<BookDetail> getBooks() {
+    public static List<BookDetail> getBooks() {
         NovelApp.bookIds.clear();
-        SQLiteDatabase dbRead = dbHelper.getReadableDatabase();
+        SQLiteDatabase dbRead = NovelApp.getDbHelper().getReadableDatabase();
         Cursor cursor;
         BookDetail book;
         List<BookDetail> list = new ArrayList<>();
@@ -196,8 +190,8 @@ public class DatabaseManager {
         return list;
     }
 
-    public String getSourceId(String _id) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+    public static String getSourceId(String _id) {
+        SQLiteDatabase db = NovelApp.getDbHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery("select sourceId from bookshelf where _id = ?", new String[]{_id});
         cursor.moveToNext();
         String sourceId = null;
@@ -210,8 +204,8 @@ public class DatabaseManager {
         return sourceId;
     }
 
-    public int updateSourceId(String _id, String sourceId) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+    public static int updateSourceId(String _id, String sourceId) {
+        SQLiteDatabase db = NovelApp.getDbHelper().getWritableDatabase();
         db.beginTransaction();
         try {
             db.execSQL("update bookshelf set sourceId=? where _id=?", new Object[]{sourceId, _id});

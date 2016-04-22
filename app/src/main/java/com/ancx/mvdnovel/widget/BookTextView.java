@@ -10,7 +10,6 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.ancx.mvdnovel.util.DisplayUtil;
-import com.ancx.mvdnovel.util.MsgUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,13 +36,14 @@ public class BookTextView extends View {
     private int currentPage;
 
     public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
+        this.currentPage = currentPage - 1;
     }
 
     private String content;
 
     public void setContent(String content) {
         this.content = content;
+        needMeasure = true;
         invalidate();
     }
 
@@ -101,6 +101,8 @@ public class BookTextView extends View {
             return;
         drawBackGround(canvas);
         drawHintText(canvas);
+        if (content == null)
+            return;
         if (needMeasure)
             measurePage();
         drawContent(canvas);
@@ -166,7 +168,6 @@ public class BookTextView extends View {
     private int lineMaxCount, pageMaxLine, totalLines, totalPage;
 
     private void measurePage() {
-        MsgUtil.LogTag("=====  measurePage  =====");
         contentTop = paddingTop + titleHeight + dp10;
         contentBottom = mHeight - paddingBottom - bottomHeight - dp10;
         contentHeight = contentBottom - contentTop;
@@ -183,6 +184,10 @@ public class BookTextView extends View {
             totalLines += (textSplit[i].length() / lineMaxCount) + 1;
         }
         totalPage = totalLines / pageMaxLine + 1;
+        if (isEndPage) {
+            currentPage = totalPage - 1;
+            isEndPage = false;
+        }
         textList = new String[totalLines];
         int i = 0; // 管理总行数的
         int j = 0; // 管理段落的
@@ -198,8 +203,6 @@ public class BookTextView extends View {
     }
 
     private void drawContent(Canvas canvas) {
-        if (content == null)
-            return;
         drawPage(canvas);
         drawText(canvas);
     }
@@ -243,6 +246,8 @@ public class BookTextView extends View {
             return;
         }
         currentPage++;
+        if (onChapterChangeListener != null)
+            onChapterChangeListener.updateRecord(currentPage + 1);
         invalidate();
     }
 
@@ -254,6 +259,8 @@ public class BookTextView extends View {
             return;
         }
         currentPage--;
+        if (onChapterChangeListener != null)
+            onChapterChangeListener.updateRecord(currentPage + 1);
         invalidate();
     }
 
@@ -264,6 +271,8 @@ public class BookTextView extends View {
         void onNextChapter();
 
         void onMenu();
+
+        void updateRecord(int currentPage);
     }
 
     private OnChapterChangeListener onChapterChangeListener;
@@ -302,4 +311,9 @@ public class BookTextView extends View {
         return true;
     }
 
+    private boolean isEndPage;
+
+    public void setEndPage() {
+        isEndPage = true;
+    }
 }

@@ -10,4 +10,10 @@ public interface ReadBookView {
     BookDetail getBook();
 
     void setText(String content);
+
+    void setHint(String title, String currentChapter, String chaptersCount);
+
+    void errorNet();
+
+    void noData();
 }

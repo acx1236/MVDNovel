@@ -23,13 +23,11 @@ public class PresenterMain implements OnUpdateBookListener {
         this.mainView = mainView;
     }
 
-    private DatabaseManager databaseManager = new DatabaseManager();
-
     private List<BookDetail> books = new ArrayList<>();
 
     public void getMyBooks() {
         books.clear();
-        books.addAll(databaseManager.getBooks());
+        books.addAll(DatabaseManager.getBooks());
         mainView.showBook(books);
     }
 
@@ -45,7 +43,7 @@ public class PresenterMain implements OnUpdateBookListener {
     }
 
     public void removeBook(String _id, int position) {
-        int deleteBook = databaseManager.deleteBook(_id);
+        int deleteBook = DatabaseManager.deleteBook(_id);
         if (deleteBook == 1) {
             MsgUtil.ToastShort("小说移除成功!");
             books.remove(position);
@@ -63,7 +61,7 @@ public class PresenterMain implements OnUpdateBookListener {
                 books.get(i).setLastChapter(updateBooks.get(i).getLastChapter());
                 books.get(i).setChaptersCount(updateBooks.get(i).getChaptersCount());
                 books.get(i).setUpdate(true);
-                databaseManager.updateBook(books.get(i));
+                DatabaseManager.updateBook(books.get(i));
                 updateCount++;
             }
         }

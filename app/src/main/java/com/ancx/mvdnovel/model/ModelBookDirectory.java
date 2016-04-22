@@ -1,10 +1,13 @@
 package com.ancx.mvdnovel.model;
 
+import android.text.TextUtils;
+
 import com.ancx.mvdnovel.entity.Chapter;
 import com.ancx.mvdnovel.entity.DirectoryList;
 import com.ancx.mvdnovel.entity.Source;
 import com.ancx.mvdnovel.listener.HttpRequestListener;
 import com.ancx.mvdnovel.listener.OnBookDirectoryListener;
+import com.ancx.mvdnovel.util.DatabaseManager;
 import com.ancx.mvdnovel.util.GsonUtil;
 import com.ancx.mvdnovel.util.HttpUtil;
 import com.android.volley.VolleyError;
@@ -17,7 +20,24 @@ import java.util.List;
  */
 public class ModelBookDirectory {
 
+    private OnBookDirectoryListener onBookDirectoryListener;
+
+    public void setOnBookDirectoryListener(OnBookDirectoryListener onBookDirectoryListener) {
+        this.onBookDirectoryListener = onBookDirectoryListener;
+    }
+
     public void getSource(String _id) {
+        String sourceId = DatabaseManager.getSourceId(_id);
+        if (TextUtils.isEmpty(sourceId)) {
+            // sourceId不存在，在服务器中获取
+            getNetSource(_id);
+        } else {
+            // sourceId存在，直接返回存在的id
+            onBookDirectoryListener.setSourceId(sourceId);
+        }
+    }
+
+    private void getNetSource(String _id) {
         HttpUtil.addRequest("http://api.zhuishushenqi.com/toc?view=summary&book=" + _id,
                 new HttpRequestListener() {
                     @Override
@@ -33,12 +53,6 @@ public class ModelBookDirectory {
                             onBookDirectoryListener.onFailed();
                     }
                 });
-    }
-
-    private OnBookDirectoryListener onBookDirectoryListener;
-
-    public void setOnBookDirectoryListener(OnBookDirectoryListener onBookDirectoryListener) {
-        this.onBookDirectoryListener = onBookDirectoryListener;
     }
 
     /**
