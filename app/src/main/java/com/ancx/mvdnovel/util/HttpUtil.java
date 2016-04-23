@@ -31,6 +31,7 @@ public class HttpUtil {
         if (headers.get("X-User-Agent") == null) {
             headers.put("X-User-Agent", "ZhuiShuShenQi");
         }
+        MsgUtil.LogTag("httpUrl = " + httpUrl);
         StringRequest request = new StringRequest(httpUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
