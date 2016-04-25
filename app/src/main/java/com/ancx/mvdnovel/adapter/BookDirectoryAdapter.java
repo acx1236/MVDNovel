@@ -1,6 +1,5 @@
 package com.ancx.mvdnovel.adapter;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +19,12 @@ public class BookDirectoryAdapter extends BaseAdapter {
 
     private List<Chapter> chapters;
     private int selection;
-    private String _id;
     private SharedPreferences sharedPreferences;
 
-    public BookDirectoryAdapter(List<Chapter> chapters, int selection, String _id) {
+    public BookDirectoryAdapter(List<Chapter> chapters, int selection, SharedPreferences sharedPreferences) {
         this.chapters = chapters;
         this.selection = selection;
-        this._id = _id;
-        sharedPreferences = NovelApp.getInstance().getSharedPreferences(_id, Activity.MODE_PRIVATE);
+        this.sharedPreferences = sharedPreferences;
     }
 
     @Override

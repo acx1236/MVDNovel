@@ -1,6 +1,6 @@
 package com.ancx.mvdnovel.view;
 
-import com.ancx.mvdnovel.entity.BookDetail;
+import android.content.Intent;
 
 /**
  * Created by Ancx on 2016/4/15.
@@ -72,5 +72,7 @@ public interface BookDetailView {
 
     void errorNet();
 
-    void setBook(BookDetail book);
+    void startCache(Intent service);
+
+    void openDirectory(Intent intent);
 }

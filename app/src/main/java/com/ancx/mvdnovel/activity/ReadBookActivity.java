@@ -14,7 +14,7 @@ import com.ancx.mvdnovel.view.ReadBookView;
 import com.ancx.mvdnovel.widget.BookTextView;
 import com.ancx.mvdnovel.widget.LoadView;
 
-public class ReadBookActivity extends AppCompatActivity implements BookTextView.OnChapterChangeListener, ReadBookView, View.OnClickListener {
+public class ReadBookActivity extends AppCompatActivity implements BookTextView.OnChapterChangeListener, ReadBookView, View.OnClickListener, LoadView.OnReloadDataListener {
 
     private BookDetail book;
     private PresenterReadBook presenterReadBook;
@@ -37,6 +37,7 @@ public class ReadBookActivity extends AppCompatActivity implements BookTextView.
 
     private void initView() {
         mLoadView = (LoadView) findViewById(R.id.mLoadView);
+        mLoadView.setOnReloadDataListener(this);
         mBookTextView = (BookTextView) findViewById(R.id.mBookTextView);
         mBookTextView.setOnChapterChangeListener(this);
         setResult(RESULT_OK);
@@ -73,8 +74,7 @@ public class ReadBookActivity extends AppCompatActivity implements BookTextView.
     @Override
     public void updateRecord(int currentPage) {
         book.setReadPage(currentPage);
-        int updateBook = DatabaseManager.updateBook(book);
-        MsgUtil.LogTag("updateBook = " + updateBook);
+//        int updateBook = DatabaseManager.updateBook(book);
     }
 
     @Override
@@ -105,5 +105,15 @@ public class ReadBookActivity extends AppCompatActivity implements BookTextView.
     @Override
     public void noData() {
         mLoadView.noData();
+    }
+
+    @Override
+    public void showLoading() {
+        mLoadView.loading();
+    }
+
+    @Override
+    public void onReload() {
+        presenterReadBook.getBookText();
     }
 }

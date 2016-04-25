@@ -9,9 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ancx.mvdnovel.R;
-import com.ancx.mvdnovel.entity.BookDetail;
 import com.ancx.mvdnovel.presenter.PresenterBookDetail;
-import com.ancx.mvdnovel.service.CacheBookService;
 import com.ancx.mvdnovel.util.ImageLoader;
 import com.ancx.mvdnovel.view.BookDetailView;
 import com.ancx.mvdnovel.widget.LoadView;
@@ -67,10 +65,7 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
                 finish();
                 break;
             case R.id.tv_cache:
-                Intent cacheService = new Intent(getApplicationContext(), CacheBookService.class);
-                cacheService.putExtra("book", book);
-                startService(cacheService);
-                tv_add.setText("移除此书");
+                presenterBookDetail.cache();
                 break;
             case R.id.tv_add:
                 presenterBookDetail.operateBook();
@@ -78,17 +73,10 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
             case R.id.tv_now_read:
                 break;
             case R.id.ll_look_dir:
-                Intent intent1 = new Intent(getApplicationContext(), BookDirectoryActivity.class);
-                intent1.putExtra("title", tv_title.getText().toString());
-                intent1.putExtra("_id", _id);
-                startActivity(intent1);
+                presenterBookDetail.openDirectory(false);
                 break;
             case R.id.tv_lastChapterName:
-                Intent intent2 = new Intent(getApplicationContext(), BookDirectoryActivity.class);
-                intent2.putExtra("isEnd", true);
-                intent2.putExtra("title", tv_title.getText());
-                intent2.putExtra("_id", _id);
-                startActivity(intent2);
+                presenterBookDetail.openDirectory(true);
                 break;
         }
     }
@@ -144,11 +132,14 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
         mLoadView.errorNet();
     }
 
-    private BookDetail book;
+    @Override
+    public void startCache(Intent service) {
+        startService(service);
+    }
 
     @Override
-    public void setBook(BookDetail book) {
-        this.book = book;
+    public void openDirectory(Intent intent) {
+        startActivity(intent);
     }
 
     @Override

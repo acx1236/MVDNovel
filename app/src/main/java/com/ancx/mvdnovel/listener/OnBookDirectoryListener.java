@@ -10,9 +10,9 @@ import java.util.List;
  */
 public interface OnBookDirectoryListener {
 
-    void setSource(List<Source> sources);
+    void noData();
 
-    void setSourceId(String sourceId);
+    void setSource(String _id, List<Source> sources);
 
     void setDirectory(List<Chapter> chapters);
 

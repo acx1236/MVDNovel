@@ -1,5 +1,6 @@
 package com.ancx.mvdnovel.view;
 
+import com.ancx.mvdnovel.adapter.BookDirectoryAdapter;
 import com.ancx.mvdnovel.entity.Chapter;
 
 import java.util.List;
@@ -14,7 +15,15 @@ public interface BookDirectoryView {
      */
     String getId();
 
-    void setDirectory(List<Chapter> chapters);
-
     void errorNet();
+
+    void noData();
+
+    boolean isEnd();
+
+    void loadComplete();
+
+    void setSelection(int selection);
+
+    void setAdapter(BookDirectoryAdapter bookDirectoryAdapter);
 }

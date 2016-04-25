@@ -63,7 +63,6 @@ public class BookDetail implements Serializable {
 
     private int readCount;
     private int readPage;
-    private String sourceId;
     private boolean isUpdate;
 
     public boolean isUpdate() {
@@ -72,14 +71,6 @@ public class BookDetail implements Serializable {
 
     public void setUpdate(boolean update) {
         isUpdate = update;
-    }
-
-    public String getSourceId() {
-        return sourceId;
-    }
-
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
     }
 
     public int getReadCount() {
@@ -117,6 +108,10 @@ public class BookDetail implements Serializable {
     public String getCover() {
         if (cover.length() > 7)
             return cover.substring(7);
+        return cover;
+    }
+
+    public String getUntreatedCover() {
         return cover;
     }
 
@@ -230,6 +225,10 @@ public class BookDetail implements Serializable {
 
     public String getUpdated() {
         return DateTimeUtil.getDate(updated);
+    }
+
+    public String getUntreatedUpdated() {
+        return updated;
     }
 
     public void setUpdated(String updated) {

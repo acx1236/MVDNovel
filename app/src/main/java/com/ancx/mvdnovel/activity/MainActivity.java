@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         presenterMain = new PresenterMain(this);
 
         initView();
@@ -178,6 +177,11 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
             infoDialog.show();
     }
 
+    @Override
+    public void onRefresh() {
+        presenterMain.updateBooks();
+    }
+
     private ReadBookAdapter readBookAdapter;
 
     @Override
@@ -187,15 +191,11 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
             readBookAdapter.setOnItemClickListener(this);
             readBookAdapter.setOnMoreOperationListener(this);
             mRecyclerView.setAdapter(readBookAdapter);
+            // 首次加载，需要查询更新
             presenterMain.updateBooks();
         } else {
             readBookAdapter.notifyDataSetChanged();
         }
-    }
-
-    @Override
-    public void onRefresh() {
-        presenterMain.updateBooks();
     }
 
     @Override

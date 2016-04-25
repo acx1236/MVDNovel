@@ -16,4 +16,6 @@ public interface ReadBookView {
     void errorNet();
 
     void noData();
+
+    void showLoading();
 }

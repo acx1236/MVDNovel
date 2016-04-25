@@ -7,6 +7,10 @@ public class ChapterBody {
 
     private String title;
     private String body;
+    private boolean isVip;
+    private String cpContent;
+    private int currency;
+    private String id;
 
     public String getTitle() {
         return title;
@@ -24,4 +28,35 @@ public class ChapterBody {
         this.body = body;
     }
 
+    public boolean isIsVip() {
+        return isVip;
+    }
+
+    public void setIsVip(boolean isVip) {
+        this.isVip = isVip;
+    }
+
+    public String getCpContent() {
+        return cpContent;
+    }
+
+    public void setCpContent(String cpContent) {
+        this.cpContent = cpContent;
+    }
+
+    public int getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(int currency) {
+        this.currency = currency;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

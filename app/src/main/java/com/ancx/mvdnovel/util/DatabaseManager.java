@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.ancx.mvdnovel.NovelApp;
 import com.ancx.mvdnovel.entity.BookDetail;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,19 +85,10 @@ public class DatabaseManager {
         SQLiteDatabase db = NovelApp.getDbHelper().getWritableDatabase();
         db.beginTransaction();
         try {
-            //  _id				    图书id
-            // title				图书名称
-            // cover				图片地址
-            // author			    图书作者
-            //  updated			    更新时间
-            // lastChapter		    最后一章
-            //  readCount			已读章节数
-            // chaptersCount		总章节数
-            // readPage             阅读页数
-            // openedTime		    最后一次打开的时间(排序标准)
             db.execSQL("insert into bookshelf values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    new Object[]{book.get_id(), "", book.getTitle(), book.getCover(), book.getAuthor(), book.getUpdated(),
-                            book.getLastChapter(), 1, book.getChaptersCount(), 1, System.currentTimeMillis()});
+                    new Object[]{
+                            book.get_id(), "", book.getTitle(), book.getUntreatedCover(), book.getAuthor(),
+                            book.getUntreatedUpdated(), book.getLastChapter(), book.getChaptersCount(), 1, 1, System.currentTimeMillis()});
             db.setTransactionSuccessful();
         } catch (Exception e) {
             return 0;
@@ -106,11 +98,21 @@ public class DatabaseManager {
         db.close();
         NovelApp.bookIds.add(book.get_id());
         NovelApp.readBookChanged = true;
+        // 添加图书成功后，直接在SD卡内根据id创建文件夹
+        String saveNovelPath = MemoryUtil.getSaveNovelPath(book.get_id(), null);
+        if (saveNovelPath != null) {
+            // 如果SD卡存在，并返回了文件夹路径
+            File gidFile = new File(saveNovelPath);
+            if (!gidFile.exists()) {
+                // 如果是第一次添加图书，那么创建文件夹
+                gidFile.mkdirs();
+            }
+        }
         return 1;
     }
 
     /**
-     * 根据图书id删除记录
+     * 根据图书id删除
      *
      * @param _id
      * @return 1删除成功；0删除失败
@@ -134,29 +136,6 @@ public class DatabaseManager {
     }
 
     /**
-     * 更新图书
-     *
-     * @param book
-     * @return 1更新成功；0更新失败
-     */
-    public static int updateBook(BookDetail book) {
-        SQLiteDatabase db = NovelApp.getDbHelper().getWritableDatabase();
-        db.beginTransaction();
-        try {
-            db.execSQL("update bookshelf set sourceId=?, updated=?, lastChapter=?, readCount=?, chaptersCount=?, readPage=?, openedTime=? where _id=?",
-                    new Object[]{book.getSourceId(), book.getUpdated(), book.getLastChapter(), book.getReadCount(), book.getChaptersCount(), book.getReadPage(), System.currentTimeMillis(), book.get_id()});
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            return 0;
-        } finally {
-            db.endTransaction();
-        }
-        db.close();
-        return 1;
-    }
-
-
-    /**
      * 获取所有添加图书
      *
      * @return
@@ -173,9 +152,8 @@ public class DatabaseManager {
             String _id = cursor.getString(cursor.getColumnIndex("_id"));
             book.set_id(_id);
             NovelApp.bookIds.add(_id);
-            book.setSourceId(cursor.getString(cursor.getColumnIndex("sourceId")));
             book.setTitle(cursor.getString(cursor.getColumnIndex("title")));
-            book.setCover("/agent/" + cursor.getString(cursor.getColumnIndex("cover")));
+            book.setCover(cursor.getString(cursor.getColumnIndex("cover")));
             book.setAuthor(cursor.getString(cursor.getColumnIndex("author")));
             book.setUpdated(cursor.getString(cursor.getColumnIndex("updated")));
             book.setLastChapter(cursor.getString(cursor.getColumnIndex("lastChapter")));
@@ -190,6 +168,12 @@ public class DatabaseManager {
         return list;
     }
 
+    /**
+     * 根据图书Id获取资源id
+     *
+     * @param _id
+     * @return
+     */
     public static String getSourceId(String _id) {
         SQLiteDatabase db = NovelApp.getDbHelper().getReadableDatabase();
         Cursor cursor = db.rawQuery("select sourceId from bookshelf where _id = ?", new String[]{_id});
@@ -204,11 +188,67 @@ public class DatabaseManager {
         return sourceId;
     }
 
+    /**
+     * 换源
+     *
+     * @param _id      图书id
+     * @param sourceId 小说源id
+     * @return 1 修改成功; 0 修改失败
+     */
     public static int updateSourceId(String _id, String sourceId) {
         SQLiteDatabase db = NovelApp.getDbHelper().getWritableDatabase();
         db.beginTransaction();
         try {
             db.execSQL("update bookshelf set sourceId=? where _id=?", new Object[]{sourceId, _id});
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            return 0;
+        } finally {
+            db.endTransaction();
+        }
+        db.close();
+        return 1;
+    }
+
+    /**
+     * 阅读发生变化
+     *
+     * @param _id       图书id
+     * @param readCount 阅读到的章节
+     * @param readPage  阅读章节的页数
+     * @return 1 修改成功; 0 修改失败
+     */
+    public static int updateRead(String _id, String readCount, String readPage) {
+        SQLiteDatabase db = NovelApp.getDbHelper().getWritableDatabase();
+        db.beginTransaction();
+        try {
+            db.execSQL("update bookshelf set readCount=?, readPage=?, openedTime=? where _id=?",
+                    new Object[]{readCount, readPage, System.currentTimeMillis(), _id});
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            return 0;
+        } finally {
+            db.endTransaction();
+        }
+        db.close();
+        return 1;
+    }
+
+    /**
+     * 小说有更新
+     *
+     * @param _id           图书id
+     * @param updated       更新时间
+     * @param chaptersCount 总章节数
+     * @param lastChapter   最后章节名称
+     * @return 1 修改成功; 0 修改失败
+     */
+    public static int updateBook(String _id, String updated, int chaptersCount, String lastChapter) {
+        SQLiteDatabase db = NovelApp.getDbHelper().getWritableDatabase();
+        db.beginTransaction();
+        try {
+            db.execSQL("update bookshelf set updated=?, chaptersCount=?, lastChapter=?, openedTime=? where _id=?",
+                    new Object[]{updated, chaptersCount, lastChapter, System.currentTimeMillis(), _id});
             db.setTransactionSuccessful();
         } catch (Exception e) {
             return 0;

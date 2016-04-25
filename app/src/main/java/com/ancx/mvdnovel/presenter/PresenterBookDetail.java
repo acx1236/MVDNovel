@@ -1,9 +1,13 @@
 package com.ancx.mvdnovel.presenter;
 
+import android.content.Intent;
+
 import com.ancx.mvdnovel.NovelApp;
+import com.ancx.mvdnovel.activity.BookDirectoryActivity;
 import com.ancx.mvdnovel.entity.BookDetail;
 import com.ancx.mvdnovel.listener.OnBookDetailListener;
 import com.ancx.mvdnovel.model.ModelBookDetail;
+import com.ancx.mvdnovel.service.CacheBookService;
 import com.ancx.mvdnovel.util.DatabaseManager;
 import com.ancx.mvdnovel.util.MsgUtil;
 import com.ancx.mvdnovel.view.BookDetailView;
@@ -31,7 +35,6 @@ public class PresenterBookDetail implements OnBookDetailListener {
     @Override
     public void setDetail(BookDetail bookDetail) {
         this.bookDetail = bookDetail;
-        bookDetailView.setBook(bookDetail);
         bookDetailView.showCover(bookDetail.getCover());
         bookDetailView.showTitle(bookDetail.getTitle());
         StringBuilder sb = new StringBuilder(bookDetail.getCat() + " - ");
@@ -77,4 +80,31 @@ public class PresenterBookDetail implements OnBookDetailListener {
         }
     }
 
+    public void cache() {
+        Intent cacheService = new Intent(NovelApp.getInstance(), CacheBookService.class);
+        cacheService.putExtra("_id", bookDetail.get_id());
+        if (!NovelApp.bookIds.contains(bookDetail.get_id())) {
+            // 书没在书架里
+            int addBook = DatabaseManager.addBook(bookDetail);
+            if (addBook == 1) {
+                MsgUtil.ToastShort("小说已经添加到书架!");
+                bookDetailView.setAddText("移除此书");
+                bookDetailView.startCache(cacheService);
+            } else {
+                // 添加失败
+                MsgUtil.ToastShort("小说添加失败，目前无法缓存！");
+            }
+            return;
+        }
+        // 小说在书架里，直接缓存
+        bookDetailView.startCache(cacheService);
+    }
+
+    public void openDirectory(boolean isEnd) {
+        Intent intent = new Intent(NovelApp.getInstance(), BookDirectoryActivity.class);
+        intent.putExtra("title", bookDetail.getTitle());
+        intent.putExtra("_id", bookDetail.get_id());
+        intent.putExtra("isEnd", isEnd);
+        bookDetailView.openDirectory(intent);
+    }
 }

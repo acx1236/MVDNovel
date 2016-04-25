@@ -57,11 +57,12 @@ public class PresenterMain implements OnUpdateBookListener {
         for (int i = 0; i < books.size(); i++) {
             if (updateBooks.get(i).getChaptersCount() > books.get(i).getChaptersCount()) {
                 // 有更新
-                books.get(i).setUpdated(updateBooks.get(i).getUpdated());
-                books.get(i).setLastChapter(updateBooks.get(i).getLastChapter());
-                books.get(i).setChaptersCount(updateBooks.get(i).getChaptersCount());
                 books.get(i).setUpdate(true);
-                DatabaseManager.updateBook(books.get(i));
+                books.get(i).setUpdated(updateBooks.get(i).getUpdated());
+                books.get(i).setChaptersCount(updateBooks.get(i).getChaptersCount());
+                books.get(i).setLastChapter(updateBooks.get(i).getLastChapter());
+                DatabaseManager.updateBook(books.get(i).get_id(), updateBooks.get(i).getUpdated(),
+                        updateBooks.get(i).getChaptersCount(), updateBooks.get(i).getLastChapter());
                 updateCount++;
             }
         }
@@ -69,7 +70,7 @@ public class PresenterMain implements OnUpdateBookListener {
             MsgUtil.ToastShort("小说暂无更新!");
             mainView.updateComplete(false);
         } else {
-            MsgUtil.ToastShort("有" + updateCount + "本小说更新!");
+            MsgUtil.ToastShort("您有" + updateCount + "本小说更新!");
             mainView.updateComplete(true);
         }
     }

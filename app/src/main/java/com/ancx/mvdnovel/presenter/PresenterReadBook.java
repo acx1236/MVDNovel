@@ -48,15 +48,14 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
     }
 
     @Override
-    public void setSource(List<Source> sources) {
-        modelBookDirectory.getDirectory(sources.get(0).get_id());
+    public void setSource(String _id, List<Source> sources) {
+        modelBookDirectory.getDirectory(_id, sources.get(0).get_id());
         DatabaseManager.updateSourceId(readBookView.getBook().get_id(), sources.get(0).get_id());
-        readBookView.getBook().setSourceId(sources.get(0).get_id());
     }
 
     @Override
-    public void setSourceId(String sourceId) {
-        modelBookDirectory.getDirectory(sourceId);
+    public void noData() {
+
     }
 
     @Override
@@ -94,6 +93,7 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
                     MsgUtil.LogTag("PresenterReadBook -> setDirectory -> FileNotFoundException");
                 }
         }
+        readBookView.showLoading();
         modelReadBook.getBookBody(link);
     }
 

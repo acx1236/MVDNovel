@@ -9,13 +9,13 @@ import android.widget.TextView;
 
 import com.ancx.mvdnovel.R;
 import com.ancx.mvdnovel.adapter.BookDirectoryAdapter;
-import com.ancx.mvdnovel.entity.Chapter;
 import com.ancx.mvdnovel.presenter.PresenterBookDirectory;
 import com.ancx.mvdnovel.view.BookDirectoryView;
 import com.ancx.mvdnovel.widget.LoadView;
 
-import java.util.List;
-
+/**
+ * 目录
+ */
 public class BookDirectoryActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, BookDirectoryView, LoadView.OnReloadDataListener {
 
     private boolean isEnd;
@@ -58,22 +58,34 @@ public class BookDirectoryActivity extends AppCompatActivity implements AdapterV
         return _id;
     }
 
-    private BookDirectoryAdapter bookDirectoryAdapter;
-
     @Override
-    public void setDirectory(List<Chapter> chapters) {
-        int selection = 0;
-        if (isEnd)
-            selection = chapters.size() - 1;
-        bookDirectoryAdapter = new BookDirectoryAdapter(chapters, selection, _id);
-        mListView.setAdapter(bookDirectoryAdapter);
-        mListView.setSelection(selection);
-        mLoadView.loadComplete();
+    public boolean isEnd() {
+        return isEnd;
     }
 
     @Override
     public void errorNet() {
         mLoadView.errorNet();
+    }
+
+    @Override
+    public void noData() {
+        mLoadView.noData();
+    }
+
+    @Override
+    public void loadComplete() {
+        mLoadView.loadComplete();
+    }
+
+    @Override
+    public void setSelection(int selection) {
+        mListView.setSelection(selection);
+    }
+
+    @Override
+    public void setAdapter(BookDirectoryAdapter bookDirectoryAdapter) {
+        mListView.setAdapter(bookDirectoryAdapter);
     }
 
     @Override
