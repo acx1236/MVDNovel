@@ -88,7 +88,7 @@ public class DatabaseManager {
             db.execSQL("insert into bookshelf values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     new Object[]{
                             book.get_id(), "", book.getTitle(), book.getUntreatedCover(), book.getAuthor(),
-                            book.getUntreatedUpdated(), book.getLastChapter(), book.getChaptersCount(), 1, 1, System.currentTimeMillis()});
+                            book.getUntreatedUpdated(), book.getLastChapter(), book.getChaptersCount(), 0, 0, System.currentTimeMillis()});
             db.setTransactionSuccessful();
         } catch (Exception e) {
             return 0;
@@ -218,7 +218,7 @@ public class DatabaseManager {
      * @param readPage  阅读章节的页数
      * @return 1 修改成功; 0 修改失败
      */
-    public static int updateRead(String _id, String readCount, String readPage) {
+    public static int updateRead(String _id, int readCount, int readPage) {
         SQLiteDatabase db = NovelApp.getDbHelper().getWritableDatabase();
         db.beginTransaction();
         try {
@@ -258,4 +258,65 @@ public class DatabaseManager {
         db.close();
         return 1;
     }
+
+    /**
+     * 根据图书id获取阅读到的章节
+     *
+     * @param _id 图书id
+     * @return 阅读到多少章
+     */
+    public static int getReadCount(String _id) {
+        SQLiteDatabase db = NovelApp.getDbHelper().getReadableDatabase();
+        Cursor cursor = db.rawQuery("select readCount from bookshelf where _id = ?", new String[]{_id});
+        cursor.moveToNext();
+        int readCount = 0;
+        try {
+            readCount = cursor.getInt(cursor.getColumnIndex("readCount"));
+        } catch (Exception e) {
+            MsgUtil.LogException(e);
+            MsgUtil.LogTag("DatabaseManager -> getSourceId -> 异常");
+        }
+        return readCount;
+    }
+
+    /**
+     * 根据图书id获取阅读到的页数
+     *
+     * @param _id 图书id
+     * @return 阅读到的页数
+     */
+    public static int getReadPage(String _id) {
+        SQLiteDatabase db = NovelApp.getDbHelper().getReadableDatabase();
+        Cursor cursor = db.rawQuery("select readPage from bookshelf where _id = ?", new String[]{_id});
+        cursor.moveToNext();
+        int readPage = 0;
+        try {
+            readPage = cursor.getInt(cursor.getColumnIndex("readPage"));
+        } catch (Exception e) {
+            MsgUtil.LogException(e);
+            MsgUtil.LogTag("DatabaseManager -> getSourceId -> 异常");
+        }
+        return readPage;
+    }
+
+    /**
+     * 根据图书id获取小说的总章节数目
+     *
+     * @param _id 图书id
+     * @return 总章节数目
+     */
+    public static int getChaptersCount(String _id) {
+        SQLiteDatabase db = NovelApp.getDbHelper().getReadableDatabase();
+        Cursor cursor = db.rawQuery("select chaptersCount from bookshelf where _id = ?", new String[]{_id});
+        cursor.moveToNext();
+        int chaptersCount = 1;
+        try {
+            chaptersCount = cursor.getInt(cursor.getColumnIndex("chaptersCount"));
+        } catch (Exception e) {
+            MsgUtil.LogException(e);
+            MsgUtil.LogTag("DatabaseManager -> getSourceId -> 异常");
+        }
+        return chaptersCount;
+    }
+
 }

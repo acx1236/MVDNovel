@@ -15,6 +15,8 @@ public interface BookDirectoryView {
      */
     String getId();
 
+    int getSelection();
+
     void errorNet();
 
     void noData();

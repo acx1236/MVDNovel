@@ -74,5 +74,7 @@ public interface BookDetailView {
 
     void startCache(Intent service);
 
+    void startIntent(Intent intent);
+
     void openDirectory(Intent intent);
 }

@@ -1,5 +1,6 @@
 package com.ancx.mvdnovel.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.ancx.mvdnovel.R;
 import com.ancx.mvdnovel.adapter.BookDirectoryAdapter;
 import com.ancx.mvdnovel.presenter.PresenterBookDirectory;
+import com.ancx.mvdnovel.util.DatabaseManager;
 import com.ancx.mvdnovel.view.BookDirectoryView;
 import com.ancx.mvdnovel.widget.LoadView;
 
@@ -20,6 +22,7 @@ public class BookDirectoryActivity extends AppCompatActivity implements AdapterV
 
     private boolean isEnd;
     private String title, _id;
+    private int selection;
     private PresenterBookDirectory presenterBookDirectory;
 
     @Override
@@ -29,6 +32,7 @@ public class BookDirectoryActivity extends AppCompatActivity implements AdapterV
         isEnd = getIntent().getBooleanExtra("isEnd", false);
         title = getIntent().getStringExtra("title");
         _id = getIntent().getStringExtra("_id");
+        selection = getIntent().getIntExtra("selection", 0);
         presenterBookDirectory = new PresenterBookDirectory(this);
 
         initView();
@@ -50,12 +54,21 @@ public class BookDirectoryActivity extends AppCompatActivity implements AdapterV
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // TODO 进入指定章节阅读
+        DatabaseManager.updateRead(_id, position, 0);
+        Intent intent = new Intent(getApplicationContext(), ReadBookActivity.class);
+        intent.putExtra("_id", _id);
+        startActivity(intent);
+        finish();
     }
 
     @Override
     public String getId() {
         return _id;
+    }
+
+    @Override
+    public int getSelection() {
+        return selection;
     }
 
     @Override

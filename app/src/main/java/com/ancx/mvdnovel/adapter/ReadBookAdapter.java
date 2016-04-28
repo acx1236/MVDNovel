@@ -28,8 +28,8 @@ public class ReadBookAdapter extends RecyclerView.Adapter {
 
     private List<BookDetail> books;
 
-    public BookDetail getBook(int position) {
-        return books.get(position);
+    public String getBookId(int position) {
+        return books.get(position).get_id();
     }
 
     public ReadBookAdapter(List<BookDetail> books) {

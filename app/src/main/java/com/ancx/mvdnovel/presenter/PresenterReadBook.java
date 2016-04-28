@@ -32,34 +32,40 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
     private ModelReadBook modelReadBook = new ModelReadBook();
 
     private boolean dirIsCreated;
+    private int chaptersCount;
 
     public PresenterReadBook(ReadBookView readBookView) {
         this.readBookView = readBookView;
-        sharedPreferences = NovelApp.getInstance().getSharedPreferences(readBookView.getBook().get_id(), Activity.MODE_PRIVATE);
         modelBookDirectory.setOnBookDirectoryListener(this);
         modelReadBook.setOnReadBookListener(this);
-        dirIsCreated = modelReadBook.createDir(readBookView.getBook().get_id());
+        dirIsCreated = modelReadBook.createDir(readBookView.getId());
+        readCount = DatabaseManager.getReadCount(readBookView.getId());
+        readPage = DatabaseManager.getReadPage(readBookView.getId());
+        chaptersCount = DatabaseManager.getChaptersCount(readBookView.getId());
     }
 
     private List<Chapter> chapters;
 
     public void getBookText() {
-        modelBookDirectory.getSource(readBookView.getBook().get_id());
+        modelBookDirectory.getSource(readBookView.getId());
     }
 
     @Override
     public void setSource(String _id, List<Source> sources) {
         modelBookDirectory.getDirectory(_id, sources.get(0).get_id());
-        DatabaseManager.updateSourceId(readBookView.getBook().get_id(), sources.get(0).get_id());
+        DatabaseManager.updateSourceId(readBookView.getId(), sources.get(0).get_id());
+        sharedPreferences = NovelApp.getInstance().getSharedPreferences(_id + sources.get(0).get_id(), Activity.MODE_PRIVATE);
     }
 
     @Override
     public void noData() {
-
+        readBookView.noData();
     }
 
     @Override
     public void setDirectory(List<Chapter> chapters) {
+        if (sharedPreferences == null)
+            sharedPreferences = NovelApp.getInstance().getSharedPreferences(readBookView.getId() + DatabaseManager.getSourceId(readBookView.getId()), Activity.MODE_PRIVATE);
         this.chapters = chapters;
         if (chapters.size() > 0)
             getBody();
@@ -73,19 +79,28 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
     }
 
     private String link, title;
+    private int readCount, readPage;
+    private boolean isFirstOpend = true;
 
     private void getBody() {
-        link = chapters.get((readBookView.getBook().getReadCount() - 1)).getLink();
-        title = chapters.get((readBookView.getBook().getReadCount() - 1)).getTitle();
+        link = chapters.get(readCount).getLink();
+        title = chapters.get(readCount).getTitle();
         if (sharedPreferences.getBoolean(link, false)) {
-            String saveNovelPath = MemoryUtil.getSaveNovelPath(readBookView.getBook().get_id(), title);
+            String saveNovelPath = MemoryUtil.getSaveNovelPath(readBookView.getId(), title);
             if (saveNovelPath != null)
                 try {
                     String text = ReaderUtil.getString(new FileInputStream(saveNovelPath));
-                    readBookView.setHint(title, readBookView.getBook().getReadCount() + "", readBookView.getBook().getChaptersCount() + "");
+                    readBookView.setHint(title, readCount, chaptersCount + "");
+                    if (isFirstOpend) {
+                        readBookView.setReadPage(readPage);
+                        isFirstOpend = false;
+                    }
                     readBookView.setText(text);
-                    for (int i = 0; i < 5; i++) {
-                        modelReadBook.cacheChacpter(readBookView.getBook().get_id(), chapters.get(readBookView.getBook().getReadCount() + i), sharedPreferences);
+                    readBookView.loadComplete();
+                    for (int i = 1; i <= 5; i++) {
+                        if (readCount + i >= chaptersCount)
+                            break;
+                        modelReadBook.cacheChacpter(readBookView.getId(), chapters.get(readCount + i), sharedPreferences);
                     }
                     return;
                 } catch (FileNotFoundException e) {
@@ -99,10 +114,11 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
 
     @Override
     public void setBookBody(ChapterBody chapterBody) {
-        readBookView.setHint(title, readBookView.getBook().getReadCount() + "", readBookView.getBook().getChaptersCount() + "");
+        readBookView.setHint(title, readCount, chaptersCount + "");
         readBookView.setText(chapterBody.getBody());
+        readBookView.loadComplete();
         if (dirIsCreated)
-            modelReadBook.cacheText(readBookView.getBook().get_id(), title, chapterBody.getBody(), sharedPreferences, link);
+            modelReadBook.cacheText(readBookView.getId(), title, chapterBody.getBody(), sharedPreferences, link);
     }
 
     @Override
@@ -111,22 +127,27 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
     }
 
     public void nextChapter() {
-        if (readBookView.getBook().getReadCount() == readBookView.getBook().getChaptersCount()) {
+        if (readCount == chaptersCount - 1) {
+            readBookView.readComplete();
             MsgUtil.ToastShort("亲，您已经读完啦!");
             return;
         }
-        readBookView.getBook().setReadCount(readBookView.getBook().getReadCount() + 1);
-        readBookView.getBook().setReadPage(1);
+        readCount++;
+        DatabaseManager.updateRead(readBookView.getId(), readCount, 1);
         getBody();
     }
 
     public void preChapter() {
-        if (readBookView.getBook().getReadCount() == 1) {
+        if (readCount == 0) {
             MsgUtil.ToastShort("亲，前面没有内容啦!");
             return;
         }
-        readBookView.getBook().setReadCount(readBookView.getBook().getReadCount() - 1);
-        readBookView.getBook().setReadPage(-1);
+        readCount--;
+        DatabaseManager.updateRead(readBookView.getId(), readCount, 1);
         getBody();
+    }
+
+    public void updateRecord(int currentPage) {
+        DatabaseManager.updateRead(readBookView.getId(), readCount, currentPage);
     }
 }

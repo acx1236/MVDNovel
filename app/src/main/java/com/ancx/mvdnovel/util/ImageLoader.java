@@ -1,6 +1,7 @@
 package com.ancx.mvdnovel.util;
 
 import android.graphics.Bitmap;
+import android.os.Handler;
 import android.widget.ImageView;
 
 import com.android.volley.Response;
@@ -15,6 +16,7 @@ import java.util.concurrent.Executors;
  */
 public class ImageLoader {
 
+    private static Handler handler = new Handler();
     private final static ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     public static String getKey(String imagePath) {
@@ -34,10 +36,15 @@ public class ImageLoader {
             executorService.execute(new Runnable() {
                 @Override
                 public void run() {
-                    Bitmap bitmap = BitmapUtil.readBitMap(MemoryUtil.getSaveBitmapPath(getKey(imagePath)), maxWidth, maxHeight);
+                    final Bitmap bitmap = BitmapUtil.readBitMap(MemoryUtil.getSaveBitmapPath(getKey(imagePath)), maxWidth, maxHeight);
                     if (bitmap != null) {
                         if (imagePath.equals(mImageView.getTag())) {
-                            mImageView.setImageBitmap(bitmap);
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mImageView.setImageBitmap(bitmap);
+                                }
+                            });
                         }
                         MemoryUtil.getMemory().put(getKey(imagePath), bitmap);
                     } else {

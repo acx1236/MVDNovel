@@ -28,6 +28,7 @@ import com.ancx.mvdnovel.listener.OnItemClickListener;
 import com.ancx.mvdnovel.listener.OnMoreOperationListener;
 import com.ancx.mvdnovel.presenter.PresenterMain;
 import com.ancx.mvdnovel.service.CacheBookService;
+import com.ancx.mvdnovel.util.DatabaseManager;
 import com.ancx.mvdnovel.util.ImageLoader;
 import com.ancx.mvdnovel.util.MsgUtil;
 import com.ancx.mvdnovel.view.MainView;
@@ -222,13 +223,14 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
         Intent intent = new Intent(getApplicationContext(), BookDirectoryActivity.class);
         intent.putExtra("_id", _id);
         intent.putExtra("title", title);
+        intent.putExtra("selection", DatabaseManager.getReadCount(_id));
         startActivity(intent);
     }
 
     @Override
     public void onItemClick(View v, int position) {
         Intent intent = new Intent(getApplicationContext(), ReadBookActivity.class);
-        intent.putExtra("book", readBookAdapter.getBook(position));
+        intent.putExtra("_id", readBookAdapter.getBookId(position));
         startActivityForResult(intent, 1);
     }
 

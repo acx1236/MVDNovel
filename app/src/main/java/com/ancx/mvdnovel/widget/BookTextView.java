@@ -27,16 +27,19 @@ public class BookTextView extends View {
 
     private String title, currentChapter, chaptersCount;
 
-    public void setHintText(String title, String currentChapter, String chaptersCount) {
+    public void setHintText(String title, int currentChapter, String chaptersCount) {
         this.title = title;
-        this.currentChapter = currentChapter;
+        this.currentChapter = "" + (currentChapter + 1);
         this.chaptersCount = chaptersCount;
     }
 
     private int currentPage;
 
     public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage - 1;
+        if (currentPage == 0)
+            this.currentPage = 0;
+        else
+            this.currentPage = currentPage - 1;
     }
 
     private String content;
@@ -241,6 +244,8 @@ public class BookTextView extends View {
     public void nextPage() {
         if (currentPage == totalPage - 1) {
             if (onChapterChangeListener != null) {
+                isEndPage = false;
+                currentPage = 0;
                 onChapterChangeListener.onNextChapter();
             }
             return;
@@ -254,6 +259,7 @@ public class BookTextView extends View {
     public void prePage() {
         if (currentPage == 0) {
             if (onChapterChangeListener != null) {
+                isEndPage = true;
                 onChapterChangeListener.onPreChapter();
             }
             return;
@@ -313,7 +319,8 @@ public class BookTextView extends View {
 
     private boolean isEndPage;
 
-    public void setEndPage() {
+    public void readComplete() {
+        currentPage = totalPage - 1;
         isEndPage = true;
     }
 }

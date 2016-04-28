@@ -71,6 +71,7 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
                 presenterBookDetail.operateBook();
                 break;
             case R.id.tv_now_read:
+                presenterBookDetail.nowRead();
                 break;
             case R.id.ll_look_dir:
                 presenterBookDetail.openDirectory(false);
@@ -135,6 +136,11 @@ public class BookDetailActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void startCache(Intent service) {
         startService(service);
+    }
+
+    @Override
+    public void startIntent(Intent intent) {
+        startActivity(intent);
     }
 
     @Override

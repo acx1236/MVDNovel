@@ -52,7 +52,7 @@ public class PresenterBookDirectory implements OnBookDirectoryListener {
             String sourceId = DatabaseManager.getSourceId(bookDirectoryView.getId());
             sharedPreferences = NovelApp.getInstance().getSharedPreferences(bookDirectoryView.getId() + sourceId, Activity.MODE_PRIVATE);
         }
-        int selection = 0;
+        int selection = bookDirectoryView.getSelection();
         if (bookDirectoryView.isEnd())
             selection = chapters.size() - 1;
         if (bookDirectoryAdapter == null) {

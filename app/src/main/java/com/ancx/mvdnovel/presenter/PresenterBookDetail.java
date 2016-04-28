@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import com.ancx.mvdnovel.NovelApp;
 import com.ancx.mvdnovel.activity.BookDirectoryActivity;
+import com.ancx.mvdnovel.activity.ReadBookActivity;
 import com.ancx.mvdnovel.entity.BookDetail;
 import com.ancx.mvdnovel.listener.OnBookDetailListener;
 import com.ancx.mvdnovel.model.ModelBookDetail;
@@ -106,5 +107,16 @@ public class PresenterBookDetail implements OnBookDetailListener {
         intent.putExtra("_id", bookDetail.get_id());
         intent.putExtra("isEnd", isEnd);
         bookDetailView.openDirectory(intent);
+    }
+
+    public void nowRead() {
+        if (!NovelApp.bookIds.contains(bookDetail.get_id())) {
+            DatabaseManager.addBook(bookDetail);
+            MsgUtil.ToastShort("小说已经添加到书架!");
+            bookDetailView.setAddText("移除此书");
+        }
+        Intent intent = new Intent(NovelApp.getInstance(), ReadBookActivity.class);
+        intent.putExtra("_id", bookDetailView.getId());
+        bookDetailView.startIntent(intent);
     }
 }

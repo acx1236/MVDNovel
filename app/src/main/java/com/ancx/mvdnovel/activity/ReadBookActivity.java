@@ -6,25 +6,21 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.ancx.mvdnovel.R;
-import com.ancx.mvdnovel.entity.BookDetail;
 import com.ancx.mvdnovel.presenter.PresenterReadBook;
-import com.ancx.mvdnovel.util.DatabaseManager;
-import com.ancx.mvdnovel.util.MsgUtil;
 import com.ancx.mvdnovel.view.ReadBookView;
 import com.ancx.mvdnovel.widget.BookTextView;
 import com.ancx.mvdnovel.widget.LoadView;
 
 public class ReadBookActivity extends AppCompatActivity implements BookTextView.OnChapterChangeListener, ReadBookView, View.OnClickListener, LoadView.OnReloadDataListener {
 
-    private BookDetail book;
+    private String _id;
     private PresenterReadBook presenterReadBook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_book);
-        book = (BookDetail) getIntent().getSerializableExtra("book");
-
+        _id = getIntent().getStringExtra("_id");
         presenterReadBook = new PresenterReadBook(this);
 
         initView();
@@ -73,27 +69,21 @@ public class ReadBookActivity extends AppCompatActivity implements BookTextView.
 
     @Override
     public void updateRecord(int currentPage) {
-        book.setReadPage(currentPage);
-//        int updateBook = DatabaseManager.updateBook(book);
+        presenterReadBook.updateRecord(currentPage);
     }
 
     @Override
-    public BookDetail getBook() {
-        return book;
+    public String getId() {
+        return _id;
     }
 
     @Override
     public void setText(String content) {
-        if (book.getReadPage() == -1)
-            mBookTextView.setEndPage();
-        else
-            mBookTextView.setCurrentPage(book.getReadPage());
         mBookTextView.setContent(content);
-        mLoadView.loadComplete();
     }
 
     @Override
-    public void setHint(String title, String currentChapter, String chaptersCount) {
+    public void setHint(String title, int currentChapter, String chaptersCount) {
         mBookTextView.setHintText(title, currentChapter, chaptersCount);
     }
 
@@ -115,5 +105,20 @@ public class ReadBookActivity extends AppCompatActivity implements BookTextView.
     @Override
     public void onReload() {
         presenterReadBook.getBookText();
+    }
+
+    @Override
+    public void loadComplete() {
+        mLoadView.loadComplete();
+    }
+
+    @Override
+    public void setReadPage(int readPage) {
+        mBookTextView.setCurrentPage(readPage);
+    }
+
+    @Override
+    public void readComplete() {
+        mBookTextView.readComplete();
     }
 }
