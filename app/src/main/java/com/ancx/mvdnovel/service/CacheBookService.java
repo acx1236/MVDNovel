@@ -90,6 +90,10 @@ public class CacheBookService extends Service implements OnBookDirectoryListener
     }
 
     @Override
+    public void updateSource(List<Source> sources) {
+    }
+
+    @Override
     public void setSource(String _id, List<Source> sources) {
         // 从网络中获取的源id
         if (sources != null && sources.size() > 0) {

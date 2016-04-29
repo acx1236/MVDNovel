@@ -75,17 +75,72 @@ public class ModelBookDirectory {
     }
 
     /**
-     * 获取目录信息，先从缓存文件中找，找不到再从网络中找
+     * 换源
+     *
+     * @param _id 图书Id
+     */
+    public void updateSource(final String _id) {
+        HttpUtil.addRequest("http://api.zhuishushenqi.com/toc?view=summary&book=" + _id,
+                new HttpRequestListener() {
+                    @Override
+                    public void onSuccess(String response) {
+                        List<Source> sources = GsonUtil.getArray(response, Source.class);
+                        if (onBookDirectoryListener != null)
+                            // 获取到源，根据源集合选择一个源进行获取目录
+                            onBookDirectoryListener.updateSource(sources);
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+                        MsgUtil.ToastShort("获取小说源失败!");
+                    }
+                });
+    }
+
+    /**
+     * 获取目录信息，先从网络中找，找不到再从网络中找
      *
      * @param _id      小说id
      * @param sourceId 小说源id
      */
-    public void getDirectory(String _id, String sourceId) {
+    public void getDirectory(final String _id, final String sourceId) {
+        // 先网络获取章节目录
+        HttpUtil.addRequest("http://api.zhuishushenqi.com/toc/" + sourceId + "?view=chapters",
+                new HttpRequestListener() {
+                    @Override
+                    public void onSuccess(String response) {
+                        DirectoryList directoryList = GsonUtil.getObject(response, DirectoryList.class);
+                        if (directoryList != null) {
+                            List<Chapter> chapters = directoryList.getChapters();
+                            if (onBookDirectoryListener != null) {
+                                if (chapters == null)
+                                    // 没有目录数据，显示没有数据页面，点击可以重新获取
+                                    onBookDirectoryListener.noData();
+                                else {
+                                    // 有目录数据,缓存到SD卡中
+                                    cacheDir(_id, sourceId, response);
+                                    // 设置目录信息集合
+                                    onBookDirectoryListener.setDirectory(chapters);
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+                        // 网络请求错误，从本地找
+                        getLocalDir(_id, sourceId);
+                    }
+                });
+    }
+
+    private void getLocalDir(String _id, String sourceId) {
         // 获取SD卡中缓存目录信息的路径（app cache目录下 \novel\小说id\小说源id.text ）
         String chapterPath = MemoryUtil.getSaveNovelPath(_id, sourceId);
         if (chapterPath == null) {
-            // 获取路径失败，可能没有SD卡，从网络中获取目录信息
-            getNetDirectory(_id, sourceId);
+            // 获取路径失败，可能没有SD卡
+            if (onBookDirectoryListener != null)
+                onBookDirectoryListener.onFailed();
             return;
         }
         // 有SD卡,看看有没有目录缓存
@@ -111,45 +166,10 @@ public class ModelBookDirectory {
                 MsgUtil.LogException(e);
                 MsgUtil.LogTag("ModelBookDirectory -> getSdCardDirectory -> FileNotFoundException");
             }
+            // 没有获取到缓存数据
+            if (onBookDirectoryListener != null)
+                onBookDirectoryListener.onFailed();
         }
-        // 解析失败或者文件没有发现
-        getNetDirectory(_id, sourceId);
-    }
-
-    /**
-     * 从网络中获取小说目录信息
-     *
-     * @param _id      小说Id
-     * @param sourceId 小说源Id
-     */
-    private void getNetDirectory(final String _id, final String sourceId) {
-        HttpUtil.addRequest("http://api.zhuishushenqi.com/toc/" + sourceId + "?view=chapters",
-                new HttpRequestListener() {
-                    @Override
-                    public void onSuccess(String response) {
-                        DirectoryList directoryList = GsonUtil.getObject(response, DirectoryList.class);
-                        if (directoryList != null) {
-                            List<Chapter> chapters = directoryList.getChapters();
-                            if (onBookDirectoryListener != null) {
-                                if (chapters == null)
-                                    // 没有目录数据，显示没有数据页面，点击可以重新获取
-                                    onBookDirectoryListener.noData();
-                                else {
-                                    // 有目录数据,缓存到SD卡中
-                                    cacheDir(_id, sourceId, response);
-                                    // 设置目录信息集合
-                                    onBookDirectoryListener.setDirectory(chapters);
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(VolleyError error) {
-                        if (onBookDirectoryListener != null)
-                            onBookDirectoryListener.onFailed();
-                    }
-                });
     }
 
     /**

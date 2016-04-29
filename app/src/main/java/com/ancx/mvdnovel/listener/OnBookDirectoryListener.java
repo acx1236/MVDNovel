@@ -18,4 +18,6 @@ public interface OnBookDirectoryListener {
 
     void onFailed();
 
+    void updateSource(List<Source> sources);
+
 }

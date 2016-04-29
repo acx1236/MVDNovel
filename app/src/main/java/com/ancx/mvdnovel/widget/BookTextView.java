@@ -23,6 +23,11 @@ public class BookTextView extends View {
 
     public void setNight(boolean night) {
         isNight = night;
+        invalidate();
+    }
+
+    public boolean isNight() {
+        return isNight;
     }
 
     private String title, currentChapter, chaptersCount;
@@ -40,6 +45,7 @@ public class BookTextView extends View {
             this.currentPage = 0;
         else
             this.currentPage = currentPage - 1;
+        isEndPage = false;
     }
 
     private String content;
@@ -232,12 +238,14 @@ public class BookTextView extends View {
     }
 
     public void addTextSize() {
-        textSize += DisplayUtil.sp2px(5);
+        textSize += DisplayUtil.sp2px(3);
+        needMeasure = true;
         invalidate();
     }
 
     public void minusTextSize() {
-        textSize -= DisplayUtil.sp2px(5);
+        textSize -= DisplayUtil.sp2px(3);
+        needMeasure = true;
         invalidate();
     }
 

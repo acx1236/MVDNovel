@@ -6,6 +6,37 @@
     android:orientation="vertical"
     android:visibility="gone">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#000000">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:src="@mipmap/icon_back" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4" />
+
+        <TextView
+            android:id="@+id/tv_source"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:padding="7.5dp"
+            android:text="换源"
+            android:textColor="#A6A5A3"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
     <View
         android:id="@+id/hideView"
         android:layout_width="match_parent"

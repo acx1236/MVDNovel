@@ -78,6 +78,11 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
         readBookView.errorNet();
     }
 
+    @Override
+    public void updateSource(List<Source> sources) {
+        readBookView.setSource(sources);
+    }
+
     private String link, title;
     private int readCount, readPage;
     private boolean isFirstOpend = true;
@@ -150,4 +155,9 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
     public void updateRecord(int currentPage) {
         DatabaseManager.updateRead(readBookView.getId(), readCount, currentPage);
     }
+
+    public void updateSorce() {
+        modelBookDirectory.updateSource(readBookView.getId());
+    }
+
 }

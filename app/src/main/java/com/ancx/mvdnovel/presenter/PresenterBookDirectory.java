@@ -74,4 +74,8 @@ public class PresenterBookDirectory implements OnBookDirectoryListener {
     public void onFailed() {
         bookDirectoryView.errorNet();
     }
+
+    @Override
+    public void updateSource(List<Source> sources) {
+    }
 }

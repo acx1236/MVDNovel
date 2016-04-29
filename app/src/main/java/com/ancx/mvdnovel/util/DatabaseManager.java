@@ -260,6 +260,26 @@ public class DatabaseManager {
     }
 
     /**
+     * 根据图书id获取小说名称
+     *
+     * @param _id 图书id
+     * @return 小说名称
+     */
+    public static String getTitle(String _id) {
+        SQLiteDatabase db = NovelApp.getDbHelper().getReadableDatabase();
+        Cursor cursor = db.rawQuery("select title from bookshelf where _id = ?", new String[]{_id});
+        cursor.moveToNext();
+        String title = null;
+        try {
+            title = cursor.getString(cursor.getColumnIndex("title"));
+        } catch (Exception e) {
+            MsgUtil.LogException(e);
+            MsgUtil.LogTag("DatabaseManager -> getSourceId -> 异常");
+        }
+        return title;
+    }
+
+    /**
      * 根据图书id获取阅读到的章节
      *
      * @param _id 图书id

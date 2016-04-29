@@ -1,5 +1,9 @@
 package com.ancx.mvdnovel.view;
 
+import com.ancx.mvdnovel.entity.Source;
+
+import java.util.List;
+
 /**
  * Created by Ancx on 2016/4/21.
  */
@@ -22,4 +26,7 @@ public interface ReadBookView {
     void setReadPage(int readPage);
 
     void readComplete();
+
+    void setSource(List<Source> sources);
+
 }

@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
     @Override
     public void onCacheBook(BookDetail book) {
         Intent cacheService = new Intent(getApplicationContext(), CacheBookService.class);
-        cacheService.putExtra("book", book);
+        cacheService.putExtra("_id", book.get_id());
         startService(cacheService);
     }
 
