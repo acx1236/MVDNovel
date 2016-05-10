@@ -35,7 +35,9 @@
         <activity android:name=".activity.BookDirectoryActivity" />
         <activity android:name=".activity.RankingTabActivity" />
         <activity android:name=".activity.ClassTabActivity" />
-        <activity android:name=".activity.ReadBookActivity" />
+        <activity
+            android:name=".activity.ReadBookActivity"
+            android:launchMode="singleTask" />
     </application>
 
 </manifest>

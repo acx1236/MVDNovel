@@ -30,9 +30,7 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
     private SharedPreferences sharedPreferences;
     private ModelBookDirectory modelBookDirectory = new ModelBookDirectory();
     private ModelReadBook modelReadBook = new ModelReadBook();
-
     private boolean dirIsCreated;
-    private int chaptersCount;
 
     public PresenterReadBook(ReadBookView readBookView) {
         this.readBookView = readBookView;
@@ -41,7 +39,12 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
         dirIsCreated = modelReadBook.createDir(readBookView.getId());
         readCount = DatabaseManager.getReadCount(readBookView.getId());
         readPage = DatabaseManager.getReadPage(readBookView.getId());
-        chaptersCount = DatabaseManager.getChaptersCount(readBookView.getId());
+    }
+
+    public void newChapter() {
+        readCount = DatabaseManager.getReadCount(readBookView.getId());
+        readPage = 0;
+        readBookView.setReadPage(readPage);
     }
 
     private List<Chapter> chapters;
@@ -95,7 +98,7 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
             if (saveNovelPath != null)
                 try {
                     String text = ReaderUtil.getString(new FileInputStream(saveNovelPath));
-                    readBookView.setHint(title, readCount, chaptersCount + "");
+                    readBookView.setHint(title, readCount, chapters.size() + "");
                     if (isFirstOpend) {
                         readBookView.setReadPage(readPage);
                         isFirstOpend = false;
@@ -103,7 +106,7 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
                     readBookView.setText(text);
                     readBookView.loadComplete();
                     for (int i = 1; i <= 5; i++) {
-                        if (readCount + i >= chaptersCount)
+                        if (readCount + i >= chapters.size())
                             break;
                         modelReadBook.cacheChacpter(readBookView.getId(), chapters.get(readCount + i), sharedPreferences);
                     }
@@ -119,7 +122,7 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
 
     @Override
     public void setBookBody(ChapterBody chapterBody) {
-        readBookView.setHint(title, readCount, chaptersCount + "");
+        readBookView.setHint(title, readCount, chapters.size() + "");
         readBookView.setText(chapterBody.getBody());
         readBookView.loadComplete();
         if (dirIsCreated)
@@ -132,7 +135,7 @@ public class PresenterReadBook implements OnBookDirectoryListener, OnReadBookLis
     }
 
     public void nextChapter() {
-        if (readCount == chaptersCount - 1) {
+        if (readCount == chapters.size() - 1) {
             readBookView.readComplete();
             MsgUtil.ToastShort("亲，您已经读完啦!");
             return;

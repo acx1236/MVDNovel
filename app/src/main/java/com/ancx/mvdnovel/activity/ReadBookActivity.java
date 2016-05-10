@@ -78,8 +78,6 @@ public class ReadBookActivity extends AppCompatActivity implements BookTextView.
         mLoadView.setOnReloadDataListener(this);
         mBookTextView = (BookTextView) findViewById(R.id.mBookTextView);
         mBookTextView.setOnChapterChangeListener(this);
-        setResult(RESULT_OK);
-        presenterReadBook.getBookText();
         ll_menu = (LinearLayout) findViewById(R.id.ll_menu);
         hideView = findViewById(R.id.hideView);
         hideView.setOnClickListener(this);
@@ -101,6 +99,16 @@ public class ReadBookActivity extends AppCompatActivity implements BookTextView.
         tv_prechapter.setOnClickListener(this);
         tv_nextchapter = (TextView) findViewById(R.id.tv_nextchapter);
         tv_nextchapter.setOnClickListener(this);
+        setResult(RESULT_OK);
+        presenterReadBook.getBookText();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        _id = getIntent().getStringExtra("_id");
+        presenterReadBook.newChapter();
+        presenterReadBook.getBookText();
     }
 
     @Override
